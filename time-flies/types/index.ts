@@ -23,6 +23,7 @@ export interface TimeDataEntry {
 export interface AwakeTimeDataEntry extends TimeDataEntry {
   elapsed: number;
   total: number;
+  leftSeconds: number;
 }
 
 export interface SecondsData {

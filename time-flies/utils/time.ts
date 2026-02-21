@@ -79,7 +79,7 @@ export function getTimeData(settings: Settings): TimeData {
 
   return {
     day: { progress: dayProgress, left: dayHoursLeft, unit: 'hrs' },
-    awake: { progress: awakeProgress, left: awakeLeft, unit: 'hrs', elapsed: awakeElapsed, total: awakeHours },
+    awake: { progress: awakeProgress, left: awakeLeft, unit: 'hrs', elapsed: awakeElapsed, total: awakeHours, leftSeconds: Math.round(awakeLeft * 3600) },
     week: { progress: weekProgress, left: weekDaysLeft, unit: 'days' },
     month: { progress: monthProgress, left: monthDaysLeft, unit: 'days' },
     year: { progress: yearProgress, left: yearDaysLeft, unit: 'days' },

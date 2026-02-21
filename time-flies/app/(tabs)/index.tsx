@@ -21,29 +21,6 @@ import { DayHeatmap } from '@/components/DayHeatmap';
 import { WeekHeatmap } from '@/components/WeekHeatmap';
 import { ProgressBar } from '@/components/ProgressBar';
 
-function BlinkingColon() {
-  const opacity = useSharedValue(1);
-
-  useEffect(() => {
-    opacity.value = withRepeat(
-      withSequence(
-        withTiming(0.2, { duration: 500, easing: Easing.steps(1) }),
-        withTiming(1, { duration: 500, easing: Easing.steps(1) })
-      ),
-      -1,
-      false
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-  }));
-
-  return (
-    <Animated.Text style={[styles.colonText, animatedStyle]}>:</Animated.Text>
-  );
-}
-
 function SecondsPulse({ children }: { children: React.ReactNode }) {
   const scale = useSharedValue(1);
 
@@ -65,33 +42,6 @@ function SecondsPulse({ children }: { children: React.ReactNode }) {
   return <Animated.View style={animatedStyle}>{children}</Animated.View>;
 }
 
-function ShimmerBar() {
-  const translateX = useSharedValue(-1);
-
-  useEffect(() => {
-    translateX.value = withRepeat(
-      withTiming(2, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      false
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: `${translateX.value * 100}%` as any }],
-  }));
-
-  return (
-    <Animated.View style={[styles.shimmerOverlay, animatedStyle]}>
-      <LinearGradient
-        colors={['transparent', 'rgba(255,255,255,0.2)', 'transparent']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={StyleSheet.absoluteFill}
-      />
-    </Animated.View>
-  );
-}
-
 function fmtCountdown(totalSec: number): string {
   const hh = Math.floor(totalSec / 3600);
   const mm = Math.floor((totalSec % 3600) / 60);
@@ -101,7 +51,7 @@ function fmtCountdown(totalSec: number): string {
 
 export default function HomeScreen() {
   const { settings } = useSettings();
-  const { data, clockParts } = useTimeData();
+  const { data } = useTimeData();
   const insets = useSafeAreaInsets();
   const now = new Date();
 
@@ -113,21 +63,25 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
 
-        {/* Clock display with split H:M:S */}
-        <Animated.View entering={FadeInDown.duration(800)} style={styles.timeSection}>
+        {/* Hero: Day Countdown */}
+        <Animated.View entering={FadeInDown.duration(800)} style={styles.heroSection}>
           <Text style={styles.greeting}>
-            {settings.name ? `${settings.name}, RIGHT NOW IT'S` : "RIGHT NOW IT'S"}
+            {settings.name ? `${settings.name}, TODAY YOU HAVE` : 'TODAY YOU HAVE'}
           </Text>
-          <View style={styles.clockRow}>
-            <Text style={styles.clockDigits}>{clockParts.hours}</Text>
-            <BlinkingColon />
-            <Text style={styles.clockDigits}>{clockParts.minutes}</Text>
-            {settings.showSeconds && (
-              <>
-                <BlinkingColon />
-                <Text style={styles.clockSeconds}>{clockParts.seconds}</Text>
-              </>
-            )}
+          <View style={styles.heroRow}>
+            <CircularRing
+              progress={data.day.progress}
+              size={72}
+              strokeWidth={5}
+              color={AppColors.orange}
+              glowColor="rgba(249,115,22,0.27)">
+              <Text style={styles.heroRingPercent}>
+                {data.day.progress.toFixed(1)}%
+              </Text>
+            </CircularRing>
+            <SecondsPulse>
+              <Text style={styles.heroCountdown}>{fmtCountdown(data.seconds.todayLeft)}</Text>
+            </SecondsPulse>
           </View>
           <Text style={styles.dateText}>
             {now.toLocaleDateString('en-US', {
@@ -139,91 +93,54 @@ export default function HomeScreen() {
           </Text>
         </Animated.View>
 
-        {/* Day Progress Ring Card */}
-        <Animated.View entering={FadeInUp.delay(50).duration(500)}>
-          <LinearGradient
-            colors={['rgba(249,115,22,0.06)', 'rgba(251,146,60,0.03)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.dayRingCard}>
-            <View style={styles.dayRingRow}>
-              <CircularRing
-                progress={data.day.progress}
-                size={64}
-                strokeWidth={5}
-                color={AppColors.orange}
-                glowColor="rgba(249,115,22,0.27)">
-                <Text style={styles.ringPercent}>
-                  {data.day.progress.toFixed(1)}%
-                </Text>
-              </CircularRing>
-              <View style={styles.dayRingInfo}>
-                <Text style={styles.countdownLabel}>REMAINING</Text>
-                <SecondsPulse>
-                  <Text style={styles.countdownRemaining}>{fmtCountdown(data.seconds.todayLeft)}</Text>
-                </SecondsPulse>
-              </View>
-            </View>
-            {/* Full-width day bar with shimmer */}
-            <View style={styles.dayBarContainer}>
-              <View style={styles.dayBarTrack}>
-                <View style={[styles.dayBarFillWrapper, { width: `${data.day.progress}%` as any }]}>
-                  <LinearGradient
-                    colors={[AppColors.orange, AppColors.orangeLight]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <ShimmerBar />
-                </View>
-              </View>
-              <View style={styles.dayBarLabels}>
-                <Text style={styles.dayBarTime}>00:00</Text>
-                <Text style={styles.dayBarTime}>24:00</Text>
-              </View>
-            </View>
-          </LinearGradient>
-        </Animated.View>
-
-        {/* Seconds Counter Banner */}
-        <Animated.View entering={FadeInUp.delay(100).duration(500)} style={styles.secondsBanner}>
-          <SecondsPulse>
-            <Text style={styles.secondsCount}>{data.seconds.today.toLocaleString()}</Text>
-          </SecondsPulse>
-          <Text style={styles.secondsLabel}>seconds passed today</Text>
-        </Animated.View>
-
-        {/* Awake progress card - PURPLE */}
-        <Animated.View entering={FadeInUp.delay(150).duration(500)}>
+        {/* Awake Time Card */}
+        <Animated.View entering={FadeInUp.delay(100).duration(500)}>
           <LinearGradient
             colors={['rgba(139,92,246,0.06)', 'rgba(167,139,250,0.04)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.awakeCard}>
-            <View style={styles.awakeHeader}>
-              <View style={styles.awakeLabel}>
-                <Text style={styles.awakeIcon}>⚡</Text>
-                <Text style={styles.awakeLabelText}>Awake Time</Text>
+            <Text style={styles.awakeTitle}>AWAKE TIME REMAINING</Text>
+            <View style={styles.awakeRow}>
+              <CircularRing
+                progress={data.awake.progress}
+                size={64}
+                strokeWidth={5}
+                color={AppColors.purple}
+                glowColor="rgba(167,139,250,0.27)">
+                <Text style={styles.awakeRingPercent}>
+                  {data.awake.progress.toFixed(0)}%
+                </Text>
+              </CircularRing>
+              <View style={styles.awakeInfo}>
+                <View style={styles.awakeHoursRow}>
+                  <Text style={styles.awakeHoursLeft}>
+                    {Math.floor(data.awake.left)}h
+                  </Text>
+                  <Text style={styles.awakeHoursTotal}>
+                    / {data.awake.total}h
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.awakeLeft}>{data.awake.left.toFixed(1)} hrs left</Text>
             </View>
-            <View style={styles.awakeTrack}>
-              <View style={[styles.awakeFillWrapper, { width: `${data.awake.progress}%` as any }]}>
-                <LinearGradient
-                  colors={[AppColors.purple, AppColors.purpleLight]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                <ShimmerBar />
-              </View>
-            </View>
-            <View style={styles.awakeFooter}>
-              <Text style={styles.awakeElapsed}>{data.awake.elapsed.toFixed(1)}h used</Text>
-              <View style={styles.awakePercentRow}>
-                <Text style={styles.awakePercent}>{data.awake.progress.toFixed(1)}</Text>
-                <Text style={styles.awakePercentSign}>%</Text>
-              </View>
+            {/* Hour dots */}
+            <View style={styles.hourDotsRow}>
+              {Array.from({ length: data.awake.total }, (_, i) => {
+                const elapsedHours = Math.floor(data.awake.elapsed);
+                const isCurrent = i === elapsedHours && data.awake.progress < 100;
+                const isPast = i < elapsedHours;
+                return (
+                  <View
+                    key={i}
+                    style={[
+                      styles.hourDot,
+                      isPast && styles.hourDotPast,
+                      isCurrent && styles.hourDotCurrent,
+                      !isPast && !isCurrent && styles.hourDotFuture,
+                    ]}
+                  />
+                );
+              })}
             </View>
           </LinearGradient>
         </Animated.View>
@@ -305,144 +222,44 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
 
-  // Clock
-  timeSection: {
+  // Hero section
+  heroSection: {
     alignItems: 'center',
-    paddingTop: 16,
-    paddingBottom: 12,
+    paddingTop: 20,
+    paddingBottom: 8,
   },
   greeting: {
     fontFamily: AppFonts.outfit,
     fontSize: 13,
     color: AppColors.text35,
     letterSpacing: 2,
-    marginBottom: 4,
+    marginBottom: 10,
   },
-  clockRow: {
+  heroRow: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     justifyContent: 'center',
+    gap: 16,
   },
-  clockDigits: {
+  heroRingPercent: {
     fontFamily: AppFonts.monoBold,
-    fontSize: 38,
-    color: AppColors.text100,
-    letterSpacing: -1,
+    fontSize: 14,
+    color: AppColors.orange,
   },
-  colonText: {
+  heroCountdown: {
     fontFamily: AppFonts.monoBold,
     fontSize: 36,
     color: AppColors.orange,
-    marginHorizontal: 1,
-  },
-  clockSeconds: {
-    fontFamily: AppFonts.monoBold,
-    fontSize: 28,
-    color: AppColors.orange,
+    letterSpacing: -1,
   },
   dateText: {
     fontFamily: AppFonts.outfit,
     fontSize: 13,
     color: AppColors.text25,
-    marginTop: 4,
+    marginTop: 8,
   },
 
-  // Day Progress Ring Card
-  dayRingCard: {
-    borderRadius: 16,
-    padding: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(249,115,22,0.1)',
-  },
-  dayRingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-  },
-  ringPercent: {
-    fontFamily: AppFonts.monoBold,
-    fontSize: 13,
-    color: AppColors.orange,
-  },
-  dayRingInfo: {
-    flex: 1,
-  },
-  countdownLabel: {
-    fontFamily: AppFonts.mono,
-    fontSize: 8,
-    color: AppColors.text25,
-    letterSpacing: 1,
-    marginBottom: 2,
-  },
-  countdownRemaining: {
-    fontFamily: AppFonts.monoBold,
-    fontSize: 18,
-    color: AppColors.orange,
-  },
-
-  // Day bar
-  dayBarContainer: {
-    marginTop: 10,
-  },
-  dayBarTrack: {
-    width: '100%',
-    height: 6,
-    borderRadius: 99,
-    backgroundColor: AppColors.text06,
-    overflow: 'hidden',
-  },
-  dayBarFillWrapper: {
-    height: '100%',
-    borderRadius: 99,
-    overflow: 'hidden',
-  },
-  dayBarLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 3,
-  },
-  dayBarTime: {
-    fontFamily: AppFonts.mono,
-    fontSize: 8,
-    color: AppColors.text20,
-  },
-
-  // Shimmer
-  shimmerOverlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    width: '50%',
-  },
-
-  // Seconds banner
-  secondsBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    marginBottom: 12,
-    borderRadius: 10,
-    backgroundColor: 'rgba(249,115,22,0.04)',
-    borderWidth: 1,
-    borderColor: 'rgba(249,115,22,0.08)',
-  },
-  secondsCount: {
-    fontFamily: AppFonts.monoBold,
-    fontSize: 22,
-    color: AppColors.orange,
-  },
-  secondsLabel: {
-    fontFamily: AppFonts.outfit,
-    fontSize: 11,
-    color: AppColors.text25,
-    marginLeft: 6,
-  },
-
-  // Awake card - purple
+  // Awake card
   awakeCard: {
     borderRadius: 16,
     padding: 14,
@@ -451,66 +268,68 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(139,92,246,0.1)',
   },
-  awakeHeader: {
+  awakeTitle: {
+    fontFamily: AppFonts.mono,
+    fontSize: 13,
+    color: AppColors.text25,
+    letterSpacing: 1.5,
+    marginBottom: 10,
+  },
+  awakeRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    gap: 14,
   },
-  awakeLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  awakeIcon: {
-    fontSize: 14,
-  },
-  awakeLabelText: {
-    fontFamily: AppFonts.outfitSemiBold,
+  awakeRingPercent: {
+    fontFamily: AppFonts.monoBold,
     fontSize: 13,
     color: AppColors.purple,
   },
-  awakeLeft: {
-    fontFamily: AppFonts.mono,
-    fontSize: 11,
-    color: AppColors.text25,
+  awakeInfo: {
+    flex: 1,
   },
-  awakeTrack: {
-    width: '100%',
-    height: 10,
-    borderRadius: 99,
-    backgroundColor: AppColors.text06,
-    overflow: 'hidden',
-  },
-  awakeFillWrapper: {
-    height: '100%',
-    borderRadius: 99,
-    overflow: 'hidden',
-  },
-  awakeFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    marginTop: 6,
-  },
-  awakeElapsed: {
-    fontFamily: AppFonts.mono,
-    fontSize: 10,
-    color: AppColors.text25,
-  },
-  awakePercentRow: {
+  awakeHoursRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    gap: 4,
   },
-  awakePercent: {
+  awakeHoursLeft: {
     fontFamily: AppFonts.monoBold,
-    fontSize: 18,
+    fontSize: 36,
     color: AppColors.purple,
   },
-  awakePercentSign: {
-    fontFamily: AppFonts.mono,
-    fontSize: 11,
-    color: AppColors.text25,
+  awakeHoursTotal: {
+    fontFamily: AppFonts.monoMedium,
+    fontSize: 18,
+    color: AppColors.text35,
+  },
+
+  // Hour dots
+  hourDotsRow: {
+    flexDirection: 'row',
+    gap: 4,
+    marginTop: 12,
+    justifyContent: 'center',
+  },
+  hourDot: {
+    flex: 1,
+    height: 8,
+    borderRadius: 2,
+  },
+  hourDotPast: {
+    backgroundColor: AppColors.purple,
+    opacity: 0.45,
+  },
+  hourDotCurrent: {
+    backgroundColor: AppColors.purple,
+    shadowColor: AppColors.purple,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  hourDotFuture: {
+    backgroundColor: AppColors.text06,
   },
 
   spacer: {

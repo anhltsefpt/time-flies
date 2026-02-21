@@ -71,7 +71,7 @@ function getTimeData(settings) {
 
   return {
     day: { progress: dayProgress, left: dayHoursLeft, unit: "giờ" },
-    awake: { progress: awakeProgress, left: awakeLeft, unit: "giờ", elapsed: awakeElapsed, total: awakeHours },
+    awake: { progress: awakeProgress, left: awakeLeft, unit: "giờ", elapsed: awakeElapsed, total: awakeHours, leftSeconds: Math.round(awakeLeft * 3600) },
     week: { progress: weekProgress, left: weekDaysLeft, unit: "ngày" },
     month: { progress: monthProgress, left: monthDaysLeft, unit: "ngày" },
     year: { progress: yearProgress, left: yearDaysLeft, unit: "ngày" },
@@ -184,7 +184,7 @@ function DayHeatmap({ currentHour, currentMinute, currentSecond, settings }) {
     <div style={{ animation: "fadeUp 0.6s ease 0.15s both" }}>
       <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 16, border: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.35)", letterSpacing: "1.5px", textTransform: "uppercase" }}>24 GIỜ HÔM NAY</span>
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: "1.5px", textTransform: "uppercase" }}>24 GIỜ HÔM NAY</span>
           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
             <span style={{ fontSize: 12 }}>{currentPeriod?.icon}</span>
             <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: currentPeriod?.color }}>{currentPeriod?.label}</span>
@@ -193,7 +193,7 @@ function DayHeatmap({ currentHour, currentMinute, currentSecond, settings }) {
         {rows.map((row, ri) => (
           <div key={ri} style={{ marginBottom: ri < 3 ? 6 : 0 }}>
             <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)", width: 52, flexShrink: 0 }}>{row.label}</span>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)", width: 52, flexShrink: 0 }}>{row.label}</span>
               <div style={{ display: "flex", gap: 3, flex: 1 }}>
                 {row.hours.map(h => {
                   const isCurrent = h === currentHour;
@@ -216,11 +216,11 @@ function DayHeatmap({ currentHour, currentMinute, currentSecond, settings }) {
                       )}
                       {/* Sleep indicator */}
                       {isSleep && !isCurrent && (
-                        <span style={{ fontSize: 8, opacity: 0.5, position: "relative", zIndex: 1 }}>💤</span>
+                        <span style={{ fontSize: 11, opacity: 0.5, position: "relative", zIndex: 1 }}>💤</span>
                       )}
                       {!isSleep && (
                         <span style={{
-                          fontFamily: "'JetBrains Mono',monospace", fontSize: 9,
+                          fontFamily: "'JetBrains Mono',monospace", fontSize: 11,
                           fontWeight: isCurrent ? 700 : 500,
                           color: isCurrent ? "#fff" : isPast ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.15)",
                           position: "relative", zIndex: 1,
@@ -231,45 +231,6 @@ function DayHeatmap({ currentHour, currentMinute, currentSecond, settings }) {
                 })}
               </div>
             </div>
-          </div>
-        ))}
-        {/* Sleep info */}
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10, padding: "6px 10px", borderRadius: 8, background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.1)" }}>
-          <span style={{ fontSize: 12 }}>😴</span>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
-            Giờ ngủ: {String(sleepStart).padStart(2,"0")}:00 – {String(sleepEnd).padStart(2,"0")}:00
-          </span>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "rgba(99,102,241,0.6)", marginLeft: "auto" }}>
-            {sleepStart > sleepEnd ? 24 - sleepStart + sleepEnd : sleepEnd - sleepStart}h ngủ
-          </span>
-        </div>
-      </div>
-
-      {/* Awake time card */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 12 }}>
-        {[
-          { label: "Thời gian thức", icon: "☀️", ...({
-            hours: (() => {
-              const sh = settings.sleepStart > settings.sleepEnd ? 24 - settings.sleepStart + settings.sleepEnd : settings.sleepEnd - settings.sleepStart;
-              return 24 - sh;
-            })(),
-          }), color: "#F97316" },
-          { label: "Thời gian ngủ", icon: "🌙", ...({
-            hours: (() => {
-              return settings.sleepStart > settings.sleepEnd ? 24 - settings.sleepStart + settings.sleepEnd : settings.sleepEnd - settings.sleepStart;
-            })(),
-          }), color: "#6366F1" },
-        ].map((item, i) => (
-          <div key={i} style={{
-            background: `${item.color}08`, borderRadius: 12, padding: "10px 12px",
-            border: `1px solid ${item.color}15`,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 14 }}>{item.icon}</span>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: item.color }}>{item.label}</span>
-            </div>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 20, fontWeight: 700, color: item.color }}>{item.hours}h</span>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)" }}> / ngày</span>
           </div>
         ))}
       </div>
@@ -289,7 +250,7 @@ function WeekHeatmap({ data }) {
   return (
     <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 16, border: "1px solid rgba(255,255,255,0.06)", animation: "fadeUp 0.6s ease 0.3s both" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.35)", letterSpacing: "1.5px", textTransform: "uppercase" }}>TUẦN NÀY</span>
+        <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: "1.5px", textTransform: "uppercase" }}>TUẦN NÀY</span>
         <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "#3B82F6" }}>{data.week.progress.toFixed(1)}%</span>
       </div>
       <div style={{ display: "flex", gap: 4 }}>
@@ -308,10 +269,10 @@ function WeekHeatmap({ data }) {
                 position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {isCurrent && <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${dayProgress}%`, background: "linear-gradient(90deg, #3B82F6, #60A5FA)", borderRadius: 6, transition: "width 2s ease" }} />}
-                {isPast && <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "rgba(255,255,255,0.7)", position: "relative", zIndex: 1 }}>✓</span>}
-                {isCurrent && <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "#fff", fontWeight: 700, position: "relative", zIndex: 1 }}>{dayProgress.toFixed(0)}%</span>}
+                {isPast && <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.7)", position: "relative", zIndex: 1 }}>✓</span>}
+                {isCurrent && <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "#fff", fontWeight: 700, position: "relative", zIndex: 1 }}>{dayProgress.toFixed(0)}%</span>}
               </div>
-              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, fontWeight: isCurrent ? 700 : 400, color: isCurrent ? "#3B82F6" : isPast ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)" }}>{day}</span>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, fontWeight: isCurrent ? 700 : 400, color: isCurrent ? "#3B82F6" : isPast ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)" }}>{day}</span>
             </div>
           );
         })}
@@ -363,26 +324,19 @@ function YearHeatmap() {
       </div>
       <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 14, border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden", animation: "fadeUp 0.7s ease 0.2s both" }}>
         <div style={{ display: "flex", marginBottom: 4, marginLeft: 22 }}>
-          {monthLabels.map((ml, i) => (<span key={i} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "rgba(255,255,255,0.3)", position: "absolute", marginLeft: ml.weekIdx * (cs + gp) }}>{monthNames[ml.month]}</span>))}
+          {monthLabels.map((ml, i) => (<span key={i} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.3)", position: "absolute", marginLeft: ml.weekIdx * (cs + gp) }}>{monthNames[ml.month]}</span>))}
         </div>
         <div style={{ display: "flex", gap: 0, marginTop: 16 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: gp, marginRight: 4, flexShrink: 0 }}>
-            {dayLabels.map((dl, i) => (<div key={i} style={{ height: cs, display: "flex", alignItems: "center", fontFamily: "'JetBrains Mono',monospace", fontSize: 7, color: "rgba(255,255,255,0.2)", width: 16, justifyContent: "flex-end", paddingRight: 2 }}>{i % 2 === 0 ? dl : ""}</div>))}
+            {dayLabels.map((dl, i) => (<div key={i} style={{ height: cs, display: "flex", alignItems: "center", fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)", width: 16, justifyContent: "flex-end", paddingRight: 2 }}>{i % 2 === 0 ? dl : ""}</div>))}
           </div>
           <div style={{ display: "flex", gap: gp, overflow: "hidden" }}>
             {weeks.map((week, wi) => (<div key={wi} style={{ display: "flex", flexDirection: "column", gap: gp }}>{week.map((cell, di) => (<div key={di} style={{ width: cs, height: cs, borderRadius: 1.2, background: getColor(cell), boxShadow: cell?.isToday ? "0 0 6px #F97316, 0 0 12px #F9731644" : "none" }} />))}</div>))}
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 10 }}>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.25)" }}>Chưa tới</span>
-          {["rgba(255,255,255,0.04)","#166534","#15803d","#16a34a","#22c55e"].map((c,i) => (<div key={i} style={{ width: 8, height: 8, borderRadius: 1.5, background: c }} />))}
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.25)" }}>Gần đây</span>
-          <div style={{ width: 8, height: 8, borderRadius: 1.5, background: "#F97316", boxShadow: "0 0 4px #F97316" }} />
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.25)" }}>Hôm nay</span>
-        </div>
       </div>
       <div style={{ marginTop: 20, animation: "fadeUp 0.7s ease 0.4s both" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 12 }}>TỪNG THÁNG</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 12 }}>TỪNG THÁNG</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
           {Array.from({ length: 12 }, (_, m) => {
             const mStart = new Date(year, m, 1); const mEnd = new Date(year, m + 1, 1);
@@ -392,7 +346,7 @@ function YearHeatmap() {
             return (<div key={m} style={{ background: isCurrent ? "rgba(249,115,22,0.08)" : "rgba(255,255,255,0.02)", borderRadius: 12, padding: "10px 8px", border: isCurrent ? "1px solid rgba(249,115,22,0.2)" : "1px solid rgba(255,255,255,0.04)", textAlign: "center" }}>
               <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, fontWeight: 600, color: isCurrent ? "#F97316" : isPast ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)", margin: 0 }}>{monthNames[m]}</p>
               <div style={{ width: "100%", height: 3, borderRadius: 99, background: "rgba(255,255,255,0.06)", marginTop: 6, overflow: "hidden" }}><div style={{ width: `${pct}%`, height: "100%", borderRadius: 99, background: isCurrent ? "#F97316" : isPast ? "#22c55e" : "transparent" }} /></div>
-              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: isCurrent ? "#F97316" : "rgba(255,255,255,0.25)", margin: 0, marginTop: 4 }}>{pct.toFixed(0)}%</p>
+              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: isCurrent ? "#F97316" : "rgba(255,255,255,0.25)", margin: 0, marginTop: 4 }}>{pct.toFixed(0)}%</p>
             </div>);
           })}
         </div>
@@ -447,11 +401,11 @@ function LifeGrid({ settings }) {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10 }}>
           {Array.from({ length: Math.ceil(lifeExpectancy / 10) + 1 }, (_, i) => i * 10).filter(d => d <= lifeExpectancy).map(d => (
-            <span key={d} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>{d}</span>
+            <span key={d} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)" }}>{d}</span>
           ))}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14, justifyContent: "center" }}>
-          {phases.map((p, i) => (<div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: p.color, opacity: 0.85 }} /><span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 9, color: "rgba(255,255,255,0.35)" }}>{p.label}</span></div>))}
+          {phases.map((p, i) => (<div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: p.color, opacity: 0.85 }} /><span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{p.label}</span></div>))}
         </div>
       </div>
       <div style={{ marginTop: 20, animation: "fadeUp 0.7s ease 0.4s both" }}>
@@ -462,7 +416,7 @@ function LifeGrid({ settings }) {
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 2, background: p.color, opacity: isActive ? 1 : 0.5, boxShadow: isActive ? `0 0 6px ${p.color}` : "none" }} />
                 <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: isActive ? 600 : 400, color: isActive ? p.color : "rgba(255,255,255,0.4)" }}>{p.label}</span>
-                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "rgba(255,255,255,0.2)" }}>{p.range[0]}–{p.range[1]}</span>
+                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: "rgba(255,255,255,0.2)" }}>{p.range[0]}–{p.range[1]}</span>
               </div>
               <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: isActive ? p.color : "rgba(255,255,255,0.25)" }}>{Math.min(pct, 100).toFixed(0)}%</span>
             </div>
@@ -493,133 +447,65 @@ function HomeScreen({ data, currentTime, settings }) {
 
   return (
     <div style={{ padding: "0 20px", paddingBottom: 100 }}>
-      {/* Live Clock */}
-      <div style={{ textAlign: "center", paddingTop: 16, paddingBottom: 8, animation: "fadeDown 0.8s ease" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: "2px", textTransform: "uppercase", margin: 0, marginBottom: 4 }}>
-          {settings.name ? `${settings.name}, BÂY GIỜ LÀ` : "BÂY GIỜ LÀ"}
+      {/* Hero: Day Countdown */}
+      <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 8, animation: "fadeDown 0.8s ease" }}>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "2px", textTransform: "uppercase", margin: 0, marginBottom: 10 }}>
+          {settings.name ? `${settings.name}, HÔM NAY BẠN CÒN` : "HÔM NAY BẠN CÒN"}
         </p>
-        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 38, fontWeight: 700, color: "#fff", margin: 0, letterSpacing: "-1px", display: "flex", alignItems: "baseline", justifyContent: "center", gap: 0 }}>
-          <span>{String(h).padStart(2,"0")}</span>
-          <span style={{ animation: "colonBlink 1s step-end infinite", color: "#F97316" }}>:</span>
-          <span>{String(m).padStart(2,"0")}</span>
-          {settings.showSeconds && (
-            <>
-              <span style={{ animation: "colonBlink 1s step-end infinite", color: "#F97316" }}>:</span>
-              <span style={{ color: "#F97316", fontSize: 28, fontWeight: 600 }}>{String(s).padStart(2,"0")}</span>
-            </>
-          )}
-        </div>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 4 }}>
-          {now.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-        </p>
-      </div>
-
-      {/* Day Progress Ring + Countdown */}
-      <div style={{
-        background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(251,146,60,0.03))",
-        borderRadius: 16, padding: "14px 16px", marginBottom: 12,
-        border: "1px solid rgba(249,115,22,0.1)", animation: "fadeUp 0.4s ease",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <CircularRing progress={data.day.progress} size={64} strokeWidth={5} color="#F97316" glowColor="#F9731644">
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 13, fontWeight: 700, color: "#F97316" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
+          <CircularRing progress={data.day.progress} size={72} strokeWidth={5} color="#F97316" glowColor="#F9731644">
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 700, color: "#F97316" }}>
               {data.day.progress.toFixed(1)}%
             </span>
           </CircularRing>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 600, color: "#F97316", display: "flex", alignItems: "center", gap: 5 }}>
-                <span style={{ fontSize: 13 }}>📅</span> Hôm nay
-              </span>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.3)", margin: 0, marginBottom: 2, letterSpacing: "1px" }}>ĐÃ QUA</p>
-                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.7)", margin: 0 }}>
-                  {fmtCountdown(data.seconds.today)}
-                </p>
-              </div>
-              <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
-              <div style={{ flex: 1, textAlign: "right" }}>
-                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.3)", margin: 0, marginBottom: 2, letterSpacing: "1px" }}>CÒN LẠI</p>
-                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 700, color: "#F97316", margin: 0, animation: "countPop 1s ease infinite" }}>
-                  {fmtCountdown(data.seconds.todayLeft)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Full-width day bar with shimmer */}
-        <div style={{ marginTop: 10, position: "relative" }}>
-          <div style={{ width: "100%", height: 6, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
-            <div style={{
-              width: `${data.day.progress}%`, height: "100%", borderRadius: 99,
-              background: "linear-gradient(90deg, #F97316, #FB923C)", boxShadow: "0 0 12px #F9731644",
-              transition: "width 1s linear", position: "relative", overflow: "hidden",
-            }}>
-              <div style={{
-                position: "absolute", inset: 0,
-                background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)",
-                animation: "shimmerBar 2s ease-in-out infinite",
-              }} />
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>00:00</span>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>24:00</span>
+          <div>
+            <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 36, fontWeight: 700, color: "#F97316", margin: 0, letterSpacing: "-1px", animation: "countPop 1s ease infinite" }}>
+              {fmtCountdown(data.seconds.todayLeft)}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Seconds counter banner */}
-      <div style={{
-        textAlign: "center", padding: "8px 0", marginBottom: 12,
-        background: "rgba(249,115,22,0.04)", borderRadius: 10, border: "1px solid rgba(249,115,22,0.08)",
-        animation: "fadeUp 0.5s ease 0.05s both",
-      }}>
-        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 22, fontWeight: 700, color: "#F97316", animation: "countPop 1s ease infinite" }}>
-          {data.seconds.today.toLocaleString()}
-        </span>
-        <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>
-          giây đã trôi qua hôm nay
-        </span>
-      </div>
-
-      {/* Awake progress */}
+      {/* Awake time */}
       <div style={{
         background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(167,139,250,0.04))",
         borderRadius: 16, padding: "14px 16px", marginBottom: 16,
         border: "1px solid rgba(139,92,246,0.1)", animation: "fadeUp 0.5s ease 0.1s both",
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 14 }}>⚡</span>
-            <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: 600, color: "#8B5CF6" }}>Thời gian thức</span>
-          </div>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
-            còn {data.awake.left.toFixed(1)} giờ
-          </span>
-        </div>
-        <div style={{ width: "100%", height: 10, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden", position: "relative" }}>
-          <div style={{
-            width: `${data.awake.progress}%`, height: "100%", borderRadius: 99,
-            background: "linear-gradient(90deg, #8B5CF6, #A78BFA)", boxShadow: "0 0 12px #8B5CF644",
-            transition: "width 1s linear", position: "relative", overflow: "hidden",
-          }}>
-            <div style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)",
-              animation: "shimmerBar 2.5s ease-in-out infinite",
-            }} />
+        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 13, color: "rgba(255,255,255,0.3)", margin: 0, marginBottom: 10, letterSpacing: "1.5px" }}>THỜI GIAN THỨC CÒN LẠI</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <CircularRing progress={data.awake.progress} size={64} strokeWidth={5} color="#8B5CF6" glowColor="#A78BFA44">
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 13, fontWeight: 700, color: "#8B5CF6" }}>
+              {data.awake.progress.toFixed(0)}%
+            </span>
+          </CircularRing>
+          <div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 36, fontWeight: 700, color: "#8B5CF6" }}>
+                {Math.floor(data.awake.left)}h
+              </span>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 500, color: "rgba(255,255,255,0.35)" }}>
+                / {data.awake.total}h
+              </span>
+            </div>
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "rgba(255,255,255,0.25)" }}>
-            {data.awake.elapsed.toFixed(1)}h đã dùng
-          </span>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#8B5CF6" }}>
-            {data.awake.progress.toFixed(1)}<span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>%</span>
-          </span>
+        {/* Awake hour dots */}
+        <div style={{ display: "flex", gap: 4, marginTop: 12, justifyContent: "center" }}>
+          {Array.from({ length: data.awake.total }, (_, i) => {
+            const elapsedHours = Math.floor(data.awake.elapsed);
+            const isCurrent = i === elapsedHours && data.awake.progress < 100;
+            const isPast = i < elapsedHours;
+            return (
+              <div key={i} style={{
+                flex: 1, height: 8, borderRadius: 2,
+                background: isCurrent ? "#8B5CF6" : isPast ? "#8B5CF6" : "rgba(255,255,255,0.06)",
+                opacity: isCurrent ? 1 : isPast ? 0.45 : 1,
+                boxShadow: isCurrent ? "0 0 8px #8B5CF6, 0 0 16px #8B5CF644" : "none",
+                transition: "all 0.5s ease",
+              }} />
+            );
+          })}
         </div>
       </div>
 
@@ -678,8 +564,8 @@ function SettingSlider({ label, value, min, max, step, onChange, format, icon, c
         style={{ width: "100%", height: 6, appearance: "none", background: "rgba(255,255,255,0.08)", borderRadius: 99, outline: "none", cursor: "pointer", accentColor: color || "#F97316" }}
       />
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "rgba(255,255,255,0.2)" }}>{format ? format(min) : min}</span>
-        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "rgba(255,255,255,0.2)" }}>{format ? format(max) : max}</span>
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)" }}>{format ? format(min) : min}</span>
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)" }}>{format ? format(max) : max}</span>
       </div>
     </div>
   );
@@ -726,7 +612,7 @@ function SettingsScreen({ settings, setSettings }) {
 
       {/* Profile Section */}
       <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 16, border: "1px solid rgba(255,255,255,0.06)", marginBottom: 16, animation: "fadeUp 0.5s ease" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>👤 HỒ SƠ</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>👤 HỒ SƠ</p>
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 6, display: "block" }}>Tên của bạn</label>
           <input type="text" value={settings.name} onChange={e => update("name", e.target.value)} placeholder="Nhập tên..."
@@ -746,7 +632,7 @@ function SettingsScreen({ settings, setSettings }) {
 
       {/* Sleep Section */}
       <div style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.06), rgba(99,102,241,0.02))", borderRadius: 16, padding: 16, border: "1px solid rgba(99,102,241,0.12)", marginBottom: 16, animation: "fadeUp 0.5s ease 0.1s both" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>😴 GIẤC NGỦ</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>😴 GIẤC NGỦ</p>
 
         <SettingSlider label="Giờ đi ngủ" value={settings.sleepStart} min={20} max={3} onChange={v => update("sleepStart", v < 4 ? v + 24 : v)} format={v => { const h = v > 23 ? v - 24 : v; return `${String(h).padStart(2,"0")}:00`; }} icon="🌙" color="#6366F1" />
         <SettingSlider label="Giờ thức dậy" value={settings.sleepEnd} min={4} max={12} onChange={v => update("sleepEnd", v)} format={v => `${String(v).padStart(2,"0")}:00`} icon="🌅" color="#F97316" />
@@ -770,7 +656,7 @@ function SettingsScreen({ settings, setSettings }) {
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {[0,6,12,18,23].map(h => (
-              <span key={h} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>{String(h).padStart(2,"0")}h</span>
+              <span key={h} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)" }}>{String(h).padStart(2,"0")}h</span>
             ))}
           </div>
         </div>
@@ -779,22 +665,22 @@ function SettingsScreen({ settings, setSettings }) {
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
           <div style={{ flex: 1, padding: "8px 12px", borderRadius: 10, background: "rgba(99,102,241,0.1)", textAlign: "center" }}>
             <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#6366F1", margin: 0 }}>{sleepHours}h</p>
-            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Ngủ</p>
+            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Ngủ</p>
           </div>
           <div style={{ flex: 1, padding: "8px 12px", borderRadius: 10, background: "rgba(249,115,22,0.1)", textAlign: "center" }}>
             <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#F97316", margin: 0 }}>{awakeHours}h</p>
-            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Thức</p>
+            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Thức</p>
           </div>
           <div style={{ flex: 1, padding: "8px 12px", borderRadius: 10, background: "rgba(34,197,94,0.1)", textAlign: "center" }}>
             <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#22c55e", margin: 0 }}>{(awakeHours * 365).toLocaleString()}h</p>
-            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Thức/năm</p>
+            <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 2 }}>Thức/năm</p>
           </div>
         </div>
       </div>
 
       {/* Notifications */}
       <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 16, border: "1px solid rgba(255,255,255,0.06)", marginBottom: 16, animation: "fadeUp 0.5s ease 0.2s both" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 6 }}>🔔 THÔNG BÁO</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 6 }}>🔔 THÔNG BÁO</p>
         <SettingToggle label="Thông báo mốc thời gian" value={settings.notifyMilestones} onChange={() => update("notifyMilestones", !settings.notifyMilestones)} icon="🏁" description='"Năm 2026 đã qua 50% rồi!"' />
         <SettingToggle label="Nhắc nhở hàng ngày" value={settings.notifyDaily} onChange={() => update("notifyDaily", !settings.notifyDaily)} icon="⏰" description="Nhận thông báo mỗi ngày" />
         {settings.notifyDaily && (
@@ -806,25 +692,24 @@ function SettingsScreen({ settings, setSettings }) {
 
       {/* Display */}
       <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 16, padding: 16, border: "1px solid rgba(255,255,255,0.06)", marginBottom: 16, animation: "fadeUp 0.5s ease 0.3s both" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 6 }}>🎨 HIỂN THỊ</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 6 }}>🎨 HIỂN THỊ</p>
         <SettingToggle label="Hiện giây" value={settings.showSeconds} onChange={() => update("showSeconds", !settings.showSeconds)} icon="⏱" description="Hiện giây trong đồng hồ" />
         <SettingToggle label="Tab Cuộc đời" value={settings.showLifeTab} onChange={() => update("showLifeTab", !settings.showLifeTab)} icon="👤" description="Hiện tab cuộc đời ở thanh điều hướng" />
       </div>
 
       {/* Life stats */}
       <div style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.06), rgba(236,72,153,0.04))", borderRadius: 16, padding: 16, border: "1px solid rgba(245,158,11,0.1)", animation: "fadeUp 0.5s ease 0.4s both" }}>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>📊 THỐNG KÊ CUỘC ĐỜI</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0, marginBottom: 14 }}>📊 THỐNG KÊ CUỘC ĐỜI</p>
         {[
           { label: "Đã sống", value: `${age} năm`, sub: `${(age * 365).toLocaleString()} ngày`, color: "#F59E0B" },
           { label: "Đã thức", value: `${(age * awakeHours * 365).toLocaleString()}h`, sub: `${((age * awakeHours * 365) / 24).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ngày`, color: "#F97316" },
           { label: "Đã ngủ", value: `${(age * sleepHours * 365).toLocaleString()}h`, sub: `${((age * sleepHours * 365) / 24).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ngày`, color: "#6366F1" },
-          { label: "Nhịp tim ước tính", value: `${(age * 365 * 24 * 60 * 72).toExponential(1)}`, sub: "nhịp (72 bpm)", color: "#EC4899" },
         ].map((s, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
             <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>{s.label}</span>
             <div style={{ textAlign: "right" }}>
               <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 600, color: s.color }}>{s.value}</span>
-              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, color: "rgba(255,255,255,0.2)", margin: 0 }}>{s.sub}</p>
+              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.2)", margin: 0 }}>{s.sub}</p>
             </div>
           </div>
         ))}
@@ -923,7 +808,7 @@ export default function TimeFlyApp() {
           <span style={{ fontSize: 20 }}>⏳</span>
           <h1 style={{ fontFamily: "'Outfit',sans-serif", fontSize: 18, fontWeight: 700, color: "#fff", margin: 0 }}>Time Flies</h1>
           <div style={{ marginLeft: "auto", width: 7, height: 7, borderRadius: "50%", background: "#22c55e", animation: "pulse 2s ease infinite" }} />
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "rgba(255,255,255,0.25)" }}>LIVE</span>
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: "rgba(255,255,255,0.25)" }}>LIVE</span>
         </div>
 
         {/* Content */}
@@ -940,7 +825,7 @@ export default function TimeFlyApp() {
               transition: "all 0.3s ease", padding: "6px 8px",
             }}>
               <span style={{ fontSize: 16 }}>{tab.icon}</span>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 9, fontWeight: 500, color: "#fff", letterSpacing: "0.3px" }}>{tab.label}</span>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, fontWeight: 500, color: "#fff", letterSpacing: "0.3px" }}>{tab.label}</span>
             </button>
           ))}
         </div>
