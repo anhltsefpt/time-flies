@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, ScrollView, StyleSheet, Linking, TouchableOpacity, Platform, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
@@ -12,6 +12,14 @@ import { SettingToggle } from '@/components/SettingToggle';
 export default function SettingsScreen() {
   const { settings, updateSetting } = useSettings();
   const insets = useSafeAreaInsets();
+
+  const handleContact = () => {
+    const subject = encodeURIComponent('Finite App Feedback');
+    const body = encodeURIComponent(
+      `Hi Finite team,\n\n[Describe your feedback, feature request, or bug report here]\n\n---\nApp: Finite v1.0.0\nPlatform: ${Platform.OS}`
+    );
+    Linking.openURL(`mailto:contact@finite.app?subject=${subject}&body=${body}`);
+  };
 
   const sleepHours =
     settings.sleepStart > settings.sleepEnd
@@ -245,9 +253,21 @@ export default function SettingsScreen() {
           </LinearGradient>
         </Animated.View>
 
+        {/* Contact & Feedback */}
+        <Animated.View entering={FadeInUp.delay(450).duration(500)} style={styles.contactCard}>
+          <Text style={styles.sectionTitle}>✉️ CONTACT & FEEDBACK</Text>
+          <Text style={styles.contactDescription}>
+            Have a suggestion or found a bug? We'd love to hear from you.
+          </Text>
+          <TouchableOpacity style={styles.contactButton} onPress={handleContact} activeOpacity={0.7}>
+            <Text style={styles.contactButtonText}>Send Feedback</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
         {/* App info */}
         <Animated.View entering={FadeInUp.delay(500).duration(500)} style={styles.appInfo}>
-          <Text style={styles.appName}>⏳ Time Flies</Text>
+          <Image source={require('@/assets/images/icon-transparent.png')} style={styles.appIcon} />
+          <Text style={styles.appName}>Finite</Text>
           <Text style={styles.appVersion}>v1.0.0 • Made with ❤️</Text>
           <Text style={styles.appMotto}>Every second counts.</Text>
         </Animated.View>
@@ -371,6 +391,34 @@ const styles = StyleSheet.create({
     paddingLeft: 34,
     marginTop: 8,
   },
+  contactCard: {
+    backgroundColor: AppColors.surfaceBg,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(59,130,246,0.2)',
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  contactDescription: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 13,
+    color: AppColors.text50,
+    marginBottom: 14,
+    lineHeight: 18,
+  },
+  contactButton: {
+    backgroundColor: 'rgba(59,130,246,0.12)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  contactButtonText: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 14,
+    color: '#3B82F6',
+  },
   lifeStatsCard: {
     borderRadius: 16,
     padding: 16,
@@ -407,6 +455,11 @@ const styles = StyleSheet.create({
   appInfo: {
     alignItems: 'center',
     marginTop: 24,
+  },
+  appIcon: {
+    width: 32,
+    height: 32,
+    marginBottom: 6,
   },
   appName: {
     fontFamily: AppFonts.outfitSemiBold,

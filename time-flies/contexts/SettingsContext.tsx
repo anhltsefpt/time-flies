@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Settings } from '@/types';
 import { DEFAULT_SETTINGS } from '@/utils/time';
 
-const STORAGE_KEY = 'time-flies-settings';
+const STORAGE_KEY = 'finite-settings';
 
 interface SettingsContextType {
   settings: Settings;

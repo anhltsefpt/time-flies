@@ -34,7 +34,7 @@ export function getTimeData(settings: Settings): TimeData {
   // Awake time calculation
   const sleepHours = sleepStart > sleepEnd ? (24 - sleepStart + sleepEnd) : (sleepEnd - sleepStart);
   const awakeHours = 24 - sleepHours;
-  const currentHour = now.getHours() + now.getMinutes() / 60;
+  const currentHour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
   let awakeElapsed = 0;
   if (sleepStart > sleepEnd) {
     if (currentHour >= sleepEnd && currentHour < sleepStart) {
@@ -75,12 +75,15 @@ export function getTimeData(settings: Settings): TimeData {
   const lifeProgress = Math.min(((now.getTime() - birthDate.getTime()) / (lifeEnd.getTime() - birthDate.getTime())) * 100, 100);
   const lifeYearsLeft = Math.max((lifeEnd.getTime() - now.getTime()) / (365.25 * 86400000), 0);
 
+  const secondsToday = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
   return {
     day: { progress: dayProgress, left: dayHoursLeft, unit: 'hrs' },
-    awake: { progress: awakeProgress, left: awakeLeft, unit: 'hrs' },
+    awake: { progress: awakeProgress, left: awakeLeft, unit: 'hrs', elapsed: awakeElapsed, total: awakeHours },
     week: { progress: weekProgress, left: weekDaysLeft, unit: 'days' },
     month: { progress: monthProgress, left: monthDaysLeft, unit: 'days' },
     year: { progress: yearProgress, left: yearDaysLeft, unit: 'days' },
     life: { progress: lifeProgress, left: lifeYearsLeft, unit: 'yrs' },
+    seconds: { today: secondsToday, todayLeft: 86400 - secondsToday },
   };
 }

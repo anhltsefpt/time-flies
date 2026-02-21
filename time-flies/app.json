@@ -1,16 +1,19 @@
 {
   "expo": {
-    "name": "time-flies",
-    "slug": "time-flies",
+    "name": "Finite",
+    "slug": "Finite",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "timeflies",
+    "scheme": "finite",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.finitetime.finite"
+      "bundleIdentifier": "app.finitetime.finite",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -41,6 +44,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "520d26d3-1691-4b53-b715-e1eddc17c37a"
+      }
     }
   }
 }

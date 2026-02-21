@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, {
+  FadeInDown,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 import { AppColors, AppFonts } from '@/constants/theme';
 
 interface ProgressBarProps {
@@ -13,6 +20,33 @@ interface ProgressBarProps {
   glowColor: string;
   delay?: number;
   icon: string;
+}
+
+function ShimmerOverlay() {
+  const translateX = useSharedValue(-1);
+
+  useEffect(() => {
+    translateX.value = withRepeat(
+      withTiming(2, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      false
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: `${translateX.value * 100}%` as any }],
+  }));
+
+  return (
+    <Animated.View style={[styles.shimmer, animatedStyle]}>
+      <LinearGradient
+        colors={['transparent', 'rgba(255,255,255,0.25)', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
+    </Animated.View>
+  );
 }
 
 export function ProgressBar({ label, progress, left, unit, color, glowColor, delay = 0, icon }: ProgressBarProps) {
@@ -31,12 +65,15 @@ export function ProgressBar({ label, progress, left, unit, color, glowColor, del
         <Text style={styles.leftText}>{leftText}</Text>
       </View>
       <View style={styles.trackOuter}>
-        <LinearGradient
-          colors={[color, glowColor]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={[styles.trackFill, { width: `${Math.min(progress, 100)}%` as any }]}
-        />
+        <View style={[styles.trackFillWrapper, { width: `${Math.min(progress, 100)}%` as any }]}>
+          <LinearGradient
+            colors={[color, glowColor]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.trackFill}
+          />
+          <ShimmerOverlay />
+        </View>
       </View>
       <View style={styles.percentRow}>
         <Text style={[styles.percentValue, { color }]}>{progress.toFixed(2)}</Text>
@@ -82,9 +119,21 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.text06,
     overflow: 'hidden',
   },
-  trackFill: {
+  trackFillWrapper: {
     height: '100%',
     borderRadius: 99,
+    overflow: 'hidden',
+  },
+  trackFill: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 99,
+  },
+  shimmer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    width: '50%',
   },
   percentRow: {
     flexDirection: 'row',

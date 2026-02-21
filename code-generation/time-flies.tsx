@@ -28,7 +28,7 @@ function getTimeData(settings) {
   // Awake time calculation
   const sleepHours = sleepStart > sleepEnd ? (24 - sleepStart + sleepEnd) : (sleepEnd - sleepStart);
   const awakeHours = 24 - sleepHours;
-  const currentHour = now.getHours() + now.getMinutes() / 60;
+  const currentHour = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
   let awakeElapsed = 0;
   if (sleepStart > sleepEnd) {
     // e.g. sleep 23-6
@@ -71,11 +71,15 @@ function getTimeData(settings) {
 
   return {
     day: { progress: dayProgress, left: dayHoursLeft, unit: "giờ" },
-    awake: { progress: awakeProgress, left: awakeLeft, unit: "giờ" },
+    awake: { progress: awakeProgress, left: awakeLeft, unit: "giờ", elapsed: awakeElapsed, total: awakeHours },
     week: { progress: weekProgress, left: weekDaysLeft, unit: "ngày" },
     month: { progress: monthProgress, left: monthDaysLeft, unit: "ngày" },
     year: { progress: yearProgress, left: yearDaysLeft, unit: "ngày" },
     life: { progress: lifeProgress, left: lifeYearsLeft, unit: "năm" },
+    seconds: {
+      today: now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds(),
+      todayLeft: 86400 - (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()),
+    },
   };
 }
 
@@ -134,7 +138,7 @@ function ProgressBar({ label, progress, left, unit, color, glowColor, delay, ico
 /* ============================================================
    DAY HEATMAP
    ============================================================ */
-function DayHeatmap({ currentHour, currentMinute, settings }) {
+function DayHeatmap({ currentHour, currentMinute, currentSecond, settings }) {
   const { sleepStart, sleepEnd } = settings;
   const isSleepHour = (h) => {
     if (sleepStart > sleepEnd) return h >= sleepStart || h < sleepEnd;
@@ -149,6 +153,7 @@ function DayHeatmap({ currentHour, currentMinute, settings }) {
   ];
   const getCurrentPeriod = () => periods.find(p => currentHour >= p.range[0] && currentHour < p.range[1]);
   const currentPeriod = getCurrentPeriod();
+  const minuteFillPct = ((currentMinute * 60 + (currentSecond || 0)) / 3600) * 100;
 
   const getHourColor = (h) => {
     if (h === currentHour) return "#F97316";
@@ -194,20 +199,20 @@ function DayHeatmap({ currentHour, currentMinute, settings }) {
                   const isCurrent = h === currentHour;
                   const isPast = h < currentHour;
                   const isSleep = isSleepHour(h);
-                  const minuteFill = isCurrent ? (currentMinute / 60) * 100 : 0;
                   return (
                     <div key={h} style={{
                       flex: 1, height: 28, borderRadius: 4,
                       background: isCurrent ? "rgba(249,115,22,0.15)" : getHourColor(h),
                       opacity: getHourOpacity(h),
-                      boxShadow: isCurrent ? "0 0 10px #F97316, 0 0 20px #F9731633" : "none",
+                      boxShadow: isCurrent ? "none" : "none",
+                      animation: isCurrent ? "hourPulse 2s ease-in-out infinite" : "none",
                       position: "relative", overflow: "hidden",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       border: isCurrent ? "1px solid rgba(249,115,22,0.4)" : "none",
                       transition: "all 0.5s ease",
                     }}>
                       {isCurrent && (
-                        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${minuteFill}%`, background: "linear-gradient(90deg, #F97316, #FB923C)", borderRadius: 4, transition: "width 2s ease" }} />
+                        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${minuteFillPct}%`, background: "linear-gradient(90deg, #F97316, #FB923C)", borderRadius: 4, transition: "width 1s linear" }} />
                       )}
                       {/* Sleep indicator */}
                       {isSleep && !isCurrent && (
@@ -476,43 +481,149 @@ function LifeGrid({ settings }) {
    ============================================================ */
 function HomeScreen({ data, currentTime, settings }) {
   const now = new Date();
+  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+
+  // Format countdown HH:MM:SS
+  const fmtCountdown = (totalSec) => {
+    const hh = Math.floor(totalSec / 3600);
+    const mm = Math.floor((totalSec % 3600) / 60);
+    const ss = totalSec % 60;
+    return `${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  };
+
   return (
     <div style={{ padding: "0 20px", paddingBottom: 100 }}>
-      <div style={{ textAlign: "center", paddingTop: 16, paddingBottom: 20, animation: "fadeDown 0.8s ease" }}>
+      {/* Live Clock */}
+      <div style={{ textAlign: "center", paddingTop: 16, paddingBottom: 8, animation: "fadeDown 0.8s ease" }}>
         <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: "2px", textTransform: "uppercase", margin: 0, marginBottom: 4 }}>
           {settings.name ? `${settings.name}, BÂY GIỜ LÀ` : "BÂY GIỜ LÀ"}
         </p>
-        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 36, fontWeight: 700, color: "#fff", margin: 0, letterSpacing: "-1px" }}>{currentTime}</p>
+        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 38, fontWeight: 700, color: "#fff", margin: 0, letterSpacing: "-1px", display: "flex", alignItems: "baseline", justifyContent: "center", gap: 0 }}>
+          <span>{String(h).padStart(2,"0")}</span>
+          <span style={{ animation: "colonBlink 1s step-end infinite", color: "#F97316" }}>:</span>
+          <span>{String(m).padStart(2,"0")}</span>
+          {settings.showSeconds && (
+            <>
+              <span style={{ animation: "colonBlink 1s step-end infinite", color: "#F97316" }}>:</span>
+              <span style={{ color: "#F97316", fontSize: 28, fontWeight: 600 }}>{String(s).padStart(2,"0")}</span>
+            </>
+          )}
+        </div>
         <p style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)", margin: 0, marginTop: 4 }}>
-          {new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {now.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
+      </div>
+
+      {/* Day Progress Ring + Countdown */}
+      <div style={{
+        background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(251,146,60,0.03))",
+        borderRadius: 16, padding: "14px 16px", marginBottom: 12,
+        border: "1px solid rgba(249,115,22,0.1)", animation: "fadeUp 0.4s ease",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <CircularRing progress={data.day.progress} size={64} strokeWidth={5} color="#F97316" glowColor="#F9731644">
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 13, fontWeight: 700, color: "#F97316" }}>
+              {data.day.progress.toFixed(1)}%
+            </span>
+          </CircularRing>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 12, fontWeight: 600, color: "#F97316", display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontSize: 13 }}>📅</span> Hôm nay
+              </span>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.3)", margin: 0, marginBottom: 2, letterSpacing: "1px" }}>ĐÃ QUA</p>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.7)", margin: 0 }}>
+                  {fmtCountdown(data.seconds.today)}
+                </p>
+              </div>
+              <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
+              <div style={{ flex: 1, textAlign: "right" }}>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.3)", margin: 0, marginBottom: 2, letterSpacing: "1px" }}>CÒN LẠI</p>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 14, fontWeight: 700, color: "#F97316", margin: 0, animation: "countPop 1s ease infinite" }}>
+                  {fmtCountdown(data.seconds.todayLeft)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Full-width day bar with shimmer */}
+        <div style={{ marginTop: 10, position: "relative" }}>
+          <div style={{ width: "100%", height: 6, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+            <div style={{
+              width: `${data.day.progress}%`, height: "100%", borderRadius: 99,
+              background: "linear-gradient(90deg, #F97316, #FB923C)", boxShadow: "0 0 12px #F9731644",
+              transition: "width 1s linear", position: "relative", overflow: "hidden",
+            }}>
+              <div style={{
+                position: "absolute", inset: 0,
+                background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%)",
+                animation: "shimmerBar 2s ease-in-out infinite",
+              }} />
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>00:00</span>
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "rgba(255,255,255,0.2)" }}>24:00</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Seconds counter banner */}
+      <div style={{
+        textAlign: "center", padding: "8px 0", marginBottom: 12,
+        background: "rgba(249,115,22,0.04)", borderRadius: 10, border: "1px solid rgba(249,115,22,0.08)",
+        animation: "fadeUp 0.5s ease 0.05s both",
+      }}>
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 22, fontWeight: 700, color: "#F97316", animation: "countPop 1s ease infinite" }}>
+          {data.seconds.today.toLocaleString()}
+        </span>
+        <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>
+          giây đã trôi qua hôm nay
+        </span>
       </div>
 
       {/* Awake progress */}
       <div style={{
-        background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(251,146,60,0.04))",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(167,139,250,0.04))",
         borderRadius: 16, padding: "14px 16px", marginBottom: 16,
-        border: "1px solid rgba(249,115,22,0.1)", animation: "fadeUp 0.5s ease",
+        border: "1px solid rgba(139,92,246,0.1)", animation: "fadeUp 0.5s ease 0.1s both",
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ fontSize: 14 }}>⚡</span>
-            <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: 600, color: "#F97316" }}>Thời gian thức</span>
+            <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 13, fontWeight: 600, color: "#8B5CF6" }}>Thời gian thức</span>
           </div>
           <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
             còn {data.awake.left.toFixed(1)} giờ
           </span>
         </div>
-        <div style={{ width: "100%", height: 10, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
-          <div style={{ width: `${data.awake.progress}%`, height: "100%", borderRadius: 99, background: "linear-gradient(90deg, #F97316, #FB923C)", boxShadow: "0 0 12px #F9731644", transition: "width 1.5s ease" }} />
+        <div style={{ width: "100%", height: 10, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden", position: "relative" }}>
+          <div style={{
+            width: `${data.awake.progress}%`, height: "100%", borderRadius: 99,
+            background: "linear-gradient(90deg, #8B5CF6, #A78BFA)", boxShadow: "0 0 12px #8B5CF644",
+            transition: "width 1s linear", position: "relative", overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)",
+              animation: "shimmerBar 2.5s ease-in-out infinite",
+            }} />
+          </div>
         </div>
-        <div style={{ textAlign: "right", marginTop: 4 }}>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#F97316" }}>{data.awake.progress.toFixed(1)}</span>
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "rgba(255,255,255,0.25)" }}>%</span>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "rgba(255,255,255,0.25)" }}>
+            {data.awake.elapsed.toFixed(1)}h đã dùng
+          </span>
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 18, fontWeight: 700, color: "#8B5CF6" }}>
+            {data.awake.progress.toFixed(1)}<span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>%</span>
+          </span>
         </div>
       </div>
 
-      <DayHeatmap currentHour={now.getHours()} currentMinute={now.getMinutes()} settings={settings} />
+      <DayHeatmap currentHour={h} currentMinute={m} currentSecond={s} settings={settings} />
       <div style={{ height: 16 }} />
       <WeekHeatmap data={data} />
       <div style={{ marginTop: 20 }}>
@@ -780,6 +891,10 @@ export default function TimeFlyApp() {
         @keyframes fadeDown { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
         @keyframes scaleIn { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
         @keyframes pulse { 0%,100% { opacity:0.4; } 50% { opacity:0.8; } }
+        @keyframes colonBlink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+        @keyframes hourPulse { 0%,100% { box-shadow:0 0 6px rgba(249,115,22,0.4); } 50% { box-shadow:0 0 16px rgba(249,115,22,0.9), 0 0 30px rgba(249,115,22,0.3); } }
+        @keyframes shimmerBar { 0% { transform:translateX(-100%); } 100% { transform:translateX(200%); } }
+        @keyframes countPop { 0% { transform:scale(1); } 50% { transform:scale(1.08); } 100% { transform:scale(1); } }
         * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         ::-webkit-scrollbar { width:0; display:none; }
         input[type=range] { -webkit-appearance:none; appearance:none; height:6px; background:rgba(255,255,255,0.08); border-radius:99px; outline:none; }

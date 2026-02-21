@@ -20,17 +20,23 @@ export function YearHeatmap() {
   const yearStart = new Date(year, 0, 1);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const { weeks, daysPassed, totalDays } = useMemo(() => {
+  const { weeks, monthLabels, daysPassed, totalDays } = useMemo(() => {
     const yearEnd = new Date(year, 11, 31);
     const total = Math.round((yearEnd.getTime() - yearStart.getTime()) / 86400000) + 1;
     const startDay = yearStart.getDay() === 0 ? 6 : yearStart.getDay() - 1;
     const passed = Math.round((today.getTime() - yearStart.getTime()) / 86400000) + 1;
     const allWeeks: (WeekCell | null)[][] = [];
     let currentWeek: (WeekCell | null)[] = new Array(startDay).fill(null);
+    const mLabels: { month: number; weekIdx: number }[] = [];
+    let lastMonth = -1;
 
     for (let d = 0; d < total; d++) {
       const date = new Date(year, 0, 1 + d);
       const m = date.getMonth();
+      if (m !== lastMonth) {
+        mLabels.push({ month: m, weekIdx: allWeeks.length });
+        lastMonth = m;
+      }
       currentWeek.push({
         date,
         dayOfYear: d + 1,
@@ -47,7 +53,7 @@ export function YearHeatmap() {
       while (currentWeek.length < 7) currentWeek.push(null);
       allWeeks.push(currentWeek);
     }
-    return { weeks: allWeeks, daysPassed: passed, totalDays: total };
+    return { weeks: allWeeks, monthLabels: mLabels, daysPassed: passed, totalDays: total };
   }, [year]);
 
   // Dynamic cell size based on screen width
@@ -79,6 +85,23 @@ export function YearHeatmap() {
 
       {/* Heatmap grid */}
       <View style={styles.card}>
+        {/* Month labels */}
+        <View style={styles.monthLabelsRow}>
+          <View style={{ width: 20 }} />
+          <View style={[styles.monthLabelsContainer, { gap }]}>
+            {weeks.map((_, wi) => {
+              const ml = monthLabels.find((m) => m.weekIdx === wi);
+              return (
+                <View key={wi} style={{ width: cellSize, alignItems: 'flex-start' }}>
+                  {ml ? (
+                    <Text style={styles.monthLabelText}>{monthNames[ml.month]}</Text>
+                  ) : null}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
         <View style={styles.gridContainer}>
           {/* Day labels */}
           <View style={styles.dayLabels}>
@@ -206,6 +229,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: AppColors.surfaceBorder,
     overflow: 'hidden',
+  },
+  monthLabelsRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  monthLabelsContainer: {
+    flexDirection: 'row',
+    overflow: 'hidden',
+    flex: 1,
+  },
+  monthLabelText: {
+    fontFamily: AppFonts.mono,
+    fontSize: 8,
+    color: AppColors.text25,
   },
   gridContainer: {
     flexDirection: 'row',

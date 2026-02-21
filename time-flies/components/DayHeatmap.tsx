@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 import { AppColors, AppFonts } from '@/constants/theme';
 import { isSleepHour } from '@/utils/time';
 import { glowShadow } from '@/utils/shadow';
@@ -9,6 +17,7 @@ import type { Settings } from '@/types';
 interface DayHeatmapProps {
   currentHour: number;
   currentMinute: number;
+  currentSecond?: number;
   settings: Settings;
 }
 
@@ -26,7 +35,35 @@ const rows = [
   { hours: [18, 19, 20, 21, 22, 23], label: '🌆 6–11 PM' },
 ];
 
-export function DayHeatmap({ currentHour, currentMinute, settings }: DayHeatmapProps) {
+function PulsingHourCell({ children }: { children: React.ReactNode }) {
+  const shadowOpacity = useSharedValue(0.4);
+
+  useEffect(() => {
+    shadowOpacity.value = withRepeat(
+      withSequence(
+        withTiming(0.9, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.4, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      false
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    shadowOpacity: shadowOpacity.value,
+    shadowColor: AppColors.orange,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 10 + shadowOpacity.value * 10,
+  }));
+
+  return (
+    <Animated.View style={[styles.pulsingCell, animatedStyle]}>
+      {children}
+    </Animated.View>
+  );
+}
+
+export function DayHeatmap({ currentHour, currentMinute, currentSecond = 0, settings }: DayHeatmapProps) {
   const { sleepStart, sleepEnd } = settings;
   const currentPeriod = periods.find((p) => currentHour >= p.range[0] && currentHour < p.range[1]);
 
@@ -73,11 +110,12 @@ export function DayHeatmap({ currentHour, currentMinute, settings }: DayHeatmapP
                   const isCurrent = h === currentHour;
                   const isSleep = isSleepHour(h, sleepStart, sleepEnd);
                   const isPast = h < currentHour;
-                  const minuteFill = isCurrent ? (currentMinute / 60) * 100 : 0;
+                  const minuteFill = isCurrent
+                    ? ((currentMinute * 60 + currentSecond) / 3600) * 100
+                    : 0;
 
-                  return (
+                  const cellContent = (
                     <View
-                      key={h}
                       style={[
                         styles.hourCell,
                         {
@@ -85,7 +123,6 @@ export function DayHeatmap({ currentHour, currentMinute, settings }: DayHeatmapP
                           opacity: getHourOpacity(h),
                         },
                         isCurrent && styles.currentCell,
-                        isCurrent && glowShadow(AppColors.orange, 10),
                       ]}>
                       {isCurrent && (
                         <LinearGradient
@@ -108,6 +145,20 @@ export function DayHeatmap({ currentHour, currentMinute, settings }: DayHeatmapP
                           {h > 12 ? h - 12 : h === 0 ? 12 : h}{h < 12 ? 'a' : 'p'}
                         </Text>
                       )}
+                    </View>
+                  );
+
+                  if (isCurrent) {
+                    return (
+                      <View key={h} style={styles.cellWrapper}>
+                        <PulsingHourCell>{cellContent}</PulsingHourCell>
+                      </View>
+                    );
+                  }
+
+                  return (
+                    <View key={h} style={styles.cellWrapper}>
+                      {cellContent}
                     </View>
                   );
                 })}
@@ -200,8 +251,14 @@ const styles = StyleSheet.create({
     gap: 3,
     flex: 1,
   },
-  hourCell: {
+  cellWrapper: {
     flex: 1,
+  },
+  pulsingCell: {
+    flex: 1,
+    borderRadius: 4,
+  },
+  hourCell: {
     height: 28,
     borderRadius: 4,
     alignItems: 'center',

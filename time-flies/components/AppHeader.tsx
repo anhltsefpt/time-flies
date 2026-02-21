@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -27,8 +27,8 @@ export function AppHeader() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>⏳</Text>
-      <Text style={styles.title}>Time Flies</Text>
+      <Image source={require('@/assets/images/icon-transparent.png')} style={styles.icon} />
+      <Text style={styles.title}>Finite</Text>
       <View style={styles.liveContainer}>
         <Animated.View style={[styles.liveDot, dotStyle]} />
         <Text style={styles.liveText}>LIVE</Text>
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   icon: {
-    fontSize: 20,
+    width: 24,
+    height: 24,
   },
   title: {
     fontFamily: AppFonts.outfitBold,

@@ -20,13 +20,24 @@ export interface TimeDataEntry {
   unit: string;
 }
 
+export interface AwakeTimeDataEntry extends TimeDataEntry {
+  elapsed: number;
+  total: number;
+}
+
+export interface SecondsData {
+  today: number;
+  todayLeft: number;
+}
+
 export interface TimeData {
   day: TimeDataEntry;
-  awake: TimeDataEntry;
+  awake: AwakeTimeDataEntry;
   week: TimeDataEntry;
   month: TimeDataEntry;
   year: TimeDataEntry;
   life: TimeDataEntry;
+  seconds: SecondsData;
 }
 
 export interface Quote {
