@@ -5,12 +5,20 @@ import { Text } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
 import { AppColors } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
+import { track } from '@/utils/analytics';
 
 export default function TabLayout() {
   const { settings } = useSettings();
 
   return (
     <Tabs
+      screenListeners={{
+        state: (e) => {
+          const state = e.data.state;
+          const route = state.routes[state.index];
+          track('tab_changed', { tab: route.name });
+        },
+      }}
       screenOptions={{
         tabBarActiveTintColor: AppColors.orange,
         tabBarInactiveTintColor: AppColors.text35,

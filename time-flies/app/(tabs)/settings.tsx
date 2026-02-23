@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
+import { track } from '@/utils/analytics';
 import { AppHeader } from '@/components/AppHeader';
 import { SettingSlider } from '@/components/SettingSlider';
 import { SettingToggle } from '@/components/SettingToggle';
@@ -14,6 +15,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
 
   const handleContact = () => {
+    track('feedback_pressed');
     const subject = encodeURIComponent('Finite App Feedback');
     const body = encodeURIComponent(
       `Hi Finite team,\n\n[Describe your feedback, feature request, or bug report here]\n\n---\nApp: Finite v1.0.0\nPlatform: ${Platform.OS}`

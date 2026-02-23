@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Settings } from '@/types';
 import { DEFAULT_SETTINGS } from '@/utils/time';
+import { track, setUserProperties } from '@/utils/analytics';
 
 const STORAGE_KEY = 'finite-settings';
 
@@ -20,6 +21,7 @@ const SettingsContext = createContext<SettingsContextType>({
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
+  const didSetInitialProps = useRef(false);
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
@@ -41,8 +43,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
   }, [settings, isLoaded]);
 
+  useEffect(() => {
+    if (isLoaded && !didSetInitialProps.current) {
+      didSetInitialProps.current = true;
+      setUserProperties({
+        birth_year: settings.birthYear,
+        life_expectancy: settings.lifeExpectancy,
+        sleep_start: settings.sleepStart,
+        sleep_end: settings.sleepEnd,
+        show_life_tab: settings.showLifeTab,
+        show_seconds: settings.showSeconds,
+        has_name: !!settings.name,
+      });
+    }
+  }, [isLoaded]);
+
   const updateSetting = useCallback(<K extends keyof Settings>(key: K, value: Settings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
+    track('setting_changed', { key, value });
   }, []);
 
   return (

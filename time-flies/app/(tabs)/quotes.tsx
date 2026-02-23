@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { AppColors, AppFonts } from '@/constants/theme';
 import { quotes } from '@/data/quotes';
+import { track } from '@/utils/analytics';
 
 export default function QuotesScreen() {
   const [idx, setIdx] = useState(Math.floor(Math.random() * quotes.length));
@@ -19,7 +20,11 @@ export default function QuotesScreen() {
           <Text style={styles.quoteAuthor}>— {q.author}</Text>
         </Animated.View>
         <Pressable
-          onPress={() => setIdx((idx + 1) % quotes.length)}
+          onPress={() => {
+            const nextIdx = (idx + 1) % quotes.length;
+            setIdx(nextIdx);
+            track('quote_next', { quote_index: nextIdx });
+          }}
           style={({ pressed }) => [styles.nextButton, pressed && styles.nextButtonPressed]}>
           <Text style={styles.nextButtonText}>Next quote →</Text>
         </Pressable>

@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { SettingsProvider } from '@/contexts/SettingsContext';
+import * as analytics from '@/utils/analytics';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,6 +30,8 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
+      analytics.init();
+      analytics.track('app_opened');
     }
   }, [fontsLoaded, fontError]);
 
