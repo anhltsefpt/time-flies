@@ -1,24 +1,33 @@
-import React from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Linking, TouchableOpacity, Platform, Image } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, TextInput, ScrollView, StyleSheet, Linking, TouchableOpacity, Platform, Image, Keyboard } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
 import { track } from '@/utils/analytics';
-import { AppHeader } from '@/components/AppHeader';
 import { SettingSlider } from '@/components/SettingSlider';
 import { SettingToggle } from '@/components/SettingToggle';
+
+let hasAnimated = false;
 
 export default function SettingsScreen() {
   const { settings, updateSetting } = useSettings();
   const insets = useSafeAreaInsets();
 
+  const shouldAnimate = useRef(!hasAnimated);
+  hasAnimated = true;
+
+  const entering = (animation: ReturnType<typeof FadeInDown.duration>) =>
+    shouldAnimate.current ? animation : undefined;
+
   const handleContact = () => {
     track('feedback_pressed');
     const subject = encodeURIComponent('Finite App Feedback');
     const body = encodeURIComponent(
-      `Hi Finite team,\n\n[Describe your feedback, feature request, or bug report here]\n\n---\nApp: Finite v1.0.0\nPlatform: ${Platform.OS}`
+      `Hi Finite team,\n\n[Describe your feedback, feature request, or bug report here]\n\n---\nApp: Finite v${Constants.expoConfig?.version ?? '1.0.0'}\nPlatform: ${Platform.OS}`
     );
     Linking.openURL(`mailto:contact@finite.app?subject=${subject}&body=${body}`);
   };
@@ -32,18 +41,18 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <AppHeader />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        keyboardDismissMode="on-drag">
         {/* Header */}
-        <Animated.View entering={FadeInDown.duration(600)} style={styles.headerSection}>
+        <Animated.View entering={entering(FadeInDown.duration(600))} style={styles.headerSection}>
           <Text style={styles.headerLabel}>SETTINGS</Text>
         </Animated.View>
 
         {/* Profile Section */}
-        <Animated.View entering={FadeInUp.duration(500)} style={styles.card}>
+        <Animated.View entering={entering(FadeInUp.duration(500))} style={styles.card}>
           <Text style={styles.sectionTitle}>👤 PROFILE</Text>
           <View style={styles.nameSection}>
             <Text style={styles.inputLabel}>Your Name</Text>
@@ -53,13 +62,15 @@ export default function SettingsScreen() {
               onChangeText={(v) => updateSetting('name', v)}
               placeholder="Enter your name..."
               placeholderTextColor={AppColors.text25}
+              returnKeyType="done"
+              onSubmitEditing={Keyboard.dismiss}
             />
           </View>
           <SettingSlider
             label="Birth Year"
             value={settings.birthYear}
-            min={1940}
-            max={2015}
+            min={1920}
+            max={new Date().getFullYear() - 10}
             onChange={(v) => updateSetting('birthYear', v)}
             format={(v) => `${v} (age ${new Date().getFullYear() - v})`}
             icon="🎂"
@@ -78,14 +89,14 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Sleep Section */}
-        <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+        <Animated.View entering={entering(FadeInUp.delay(100).duration(500))}>
           <LinearGradient
             colors={['rgba(99,102,241,0.06)', 'rgba(99,102,241,0.02)']}
             style={styles.sleepCard}>
             <Text style={styles.sectionTitle}>😴 SLEEP SCHEDULE</Text>
             <SettingSlider
               label="Bedtime"
-              value={settings.sleepStart}
+              value={settings.sleepStart < 4 ? settings.sleepStart + 24 : settings.sleepStart}
               min={20}
               max={26}
               onChange={(v) => updateSetting('sleepStart', v > 23 ? v - 24 : v)}
@@ -159,7 +170,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Notifications */}
-        <Animated.View entering={FadeInUp.delay(200).duration(500)} style={styles.card}>
+        <Animated.View entering={entering(FadeInUp.delay(200).duration(500))} style={styles.card}>
           <Text style={styles.sectionTitle}>🔔 NOTIFICATIONS</Text>
           <SettingToggle
             label="Milestone Alerts"
@@ -192,7 +203,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Display */}
-        <Animated.View entering={FadeInUp.delay(300).duration(500)} style={styles.card}>
+        <Animated.View entering={entering(FadeInUp.delay(300).duration(500))} style={styles.card}>
           <Text style={styles.sectionTitle}>🎨 DISPLAY</Text>
           <SettingToggle
             label="Show Seconds"
@@ -211,7 +222,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Life stats */}
-        <Animated.View entering={FadeInUp.delay(400).duration(500)}>
+        <Animated.View entering={entering(FadeInUp.delay(400).duration(500))}>
           <LinearGradient
             colors={['rgba(245,158,11,0.06)', 'rgba(236,72,153,0.04)']}
             style={styles.lifeStatsCard}>
@@ -235,16 +246,10 @@ export default function SettingsScreen() {
                 sub: `${Math.floor((age * sleepHours * 365) / 24).toLocaleString()} days`,
                 color: AppColors.indigo,
               },
-              {
-                label: 'Est. Heartbeats',
-                value: `${(age * 365 * 24 * 60 * 72).toExponential(1)}`,
-                sub: 'beats (72 bpm avg)',
-                color: AppColors.pink,
-              },
-            ].map((s, i) => (
+            ].map((s, i, arr) => (
               <View
                 key={i}
-                style={[styles.statRow, i < 3 && styles.statRowBorder]}>
+                style={[styles.statRow, i < arr.length - 1 && styles.statRowBorder]}>
                 <Text style={styles.statLabel}>{s.label}</Text>
                 <View style={styles.statRight}>
                   <Text style={[styles.statValue, { color: s.color }]}>{s.value}</Text>
@@ -256,7 +261,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Contact & Feedback */}
-        <Animated.View entering={FadeInUp.delay(450).duration(500)} style={styles.contactCard}>
+        <Animated.View entering={entering(FadeInUp.delay(450).duration(500))} style={styles.contactCard}>
           <Text style={styles.sectionTitle}>✉️ CONTACT & FEEDBACK</Text>
           <Text style={styles.contactDescription}>
             Have a suggestion or found a bug? We'd love to hear from you.
@@ -267,10 +272,10 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* App info */}
-        <Animated.View entering={FadeInUp.delay(500).duration(500)} style={styles.appInfo}>
+        <Animated.View entering={entering(FadeInUp.delay(500).duration(500))} style={styles.appInfo}>
           <Image source={require('@/assets/images/icon-transparent.png')} style={styles.appIcon} />
           <Text style={styles.appName}>Finite</Text>
-          <Text style={styles.appVersion}>v1.0.0 • Made with ❤️</Text>
+          <Text style={styles.appVersion}>v{Constants.expoConfig?.version ?? '1.0.0'} • Made with ❤️</Text>
           <Text style={styles.appMotto}>Every second counts.</Text>
         </Animated.View>
       </ScrollView>
