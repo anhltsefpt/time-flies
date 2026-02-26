@@ -76,7 +76,7 @@ export function DayHeatmap({ currentHour, currentMinute, currentSecond = 0, sett
       const period = periods.find((p) => h >= p.range[0] && h < p.range[1]);
       return period?.color || AppColors.green;
     }
-    return AppColors.text04;
+    return AppColors.text10;
   };
 
   const getHourOpacity = (h: number) => {
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   sleepHoursText: {
     fontFamily: AppFonts.mono,
     fontSize: 10,
-    color: 'rgba(99,102,241,0.6)',
+    color: 'rgba(99,102,241,0.8)',
   },
   summaryRow: {
     flexDirection: 'row',

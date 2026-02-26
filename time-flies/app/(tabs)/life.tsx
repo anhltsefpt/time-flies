@@ -2,7 +2,6 @@ import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppColors } from '@/constants/theme';
-import { AppHeader } from '@/components/AppHeader';
 import { LifeGrid } from '@/components/LifeGrid';
 import { useSettings } from '@/contexts/SettingsContext';
 
@@ -12,7 +11,6 @@ export default function LifeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <AppHeader />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}

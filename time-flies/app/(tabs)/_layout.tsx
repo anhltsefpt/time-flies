@@ -50,6 +50,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="events"
+        options={{
+          title: 'Events',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📅</Text>,
+        }}
+      />
+      <Tabs.Screen
         name="life"
         options={{
           title: 'Life',
@@ -62,6 +69,7 @@ export default function TabLayout() {
         options={{
           title: 'Reflect',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>💬</Text>,
+          href: null,
         }}
       />
       <Tabs.Screen

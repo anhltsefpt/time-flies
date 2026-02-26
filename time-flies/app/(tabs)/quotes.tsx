@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   quoteSymbol: {
     fontSize: 48,
-    opacity: 0.15,
+    opacity: 0.30,
     color: AppColors.text100,
     fontFamily: 'Georgia',
     marginBottom: 32,

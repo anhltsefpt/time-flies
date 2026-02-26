@@ -15,9 +15,7 @@ import Animated, {
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useTimeData } from '@/hooks/useTimeData';
-import { AppHeader } from '@/components/AppHeader';
 import { CircularRing } from '@/components/CircularRing';
-import { DayHeatmap } from '@/components/DayHeatmap';
 import { WeekHeatmap } from '@/components/WeekHeatmap';
 import { ProgressBar } from '@/components/ProgressBar';
 
@@ -57,7 +55,6 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <AppHeader />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -71,7 +68,7 @@ export default function HomeScreen() {
           <View style={styles.heroRow}>
             <CircularRing
               progress={data.day.progress}
-              size={72}
+              size={80}
               strokeWidth={5}
               color={AppColors.orange}
               glowColor="rgba(249,115,22,0.27)">
@@ -145,16 +142,6 @@ export default function HomeScreen() {
           </LinearGradient>
         </Animated.View>
 
-        {/* Day Heatmap */}
-        <DayHeatmap
-          currentHour={now.getHours()}
-          currentMinute={now.getMinutes()}
-          currentSecond={now.getSeconds()}
-          settings={settings}
-        />
-
-        <View style={styles.spacer} />
-
         {/* Week Heatmap */}
         <WeekHeatmap data={data} />
 
@@ -225,8 +212,8 @@ const styles = StyleSheet.create({
   // Hero section
   heroSection: {
     alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 8,
+    paddingTop: 28,
+    paddingBottom: 16,
   },
   greeting: {
     fontFamily: AppFonts.outfit,
@@ -243,12 +230,12 @@ const styles = StyleSheet.create({
   },
   heroRingPercent: {
     fontFamily: AppFonts.monoBold,
-    fontSize: 14,
+    fontSize: 16,
     color: AppColors.orange,
   },
   heroCountdown: {
     fontFamily: AppFonts.monoBold,
-    fontSize: 36,
+    fontSize: 48,
     color: AppColors.orange,
     letterSpacing: -1,
   },
@@ -264,7 +251,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 14,
     paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: 'rgba(139,92,246,0.1)',
   },
@@ -332,14 +319,11 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.text06,
   },
 
-  spacer: {
-    height: 16,
-  },
   progressSection: {
-    marginTop: 20,
+    marginTop: 14,
   },
   lifeCard: {
-    marginTop: 4,
+    marginTop: 10,
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,

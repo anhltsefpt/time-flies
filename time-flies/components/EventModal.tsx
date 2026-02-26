@@ -1,0 +1,410 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Modal,
+  Pressable,
+  TextInput,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { AppColors, AppFonts } from '@/constants/theme';
+import { EVENT_COLORS, getDaysLeft, hexToRgba } from '@/utils/events';
+import type { FiniteEvent } from '@/types';
+
+interface EventModalProps {
+  visible: boolean;
+  event: FiniteEvent | null; // null = new event
+  onSave: (event: Omit<FiniteEvent, 'id'> & { id?: number }) => void;
+  onDelete: (id: number) => void;
+  onClose: () => void;
+}
+
+export function EventModal({ visible, event, onSave, onDelete, onClose }: EventModalProps) {
+  const isNew = !event;
+  const [name, setName] = useState(event?.name || '');
+  const [due, setDue] = useState(event?.due || getDefaultDue());
+  const [color, setColor] = useState(event?.color || EVENT_COLORS[0]);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Reset state when modal opens with new data
+  React.useEffect(() => {
+    if (visible) {
+      setName(event?.name || '');
+      setDue(event?.due || getDefaultDue());
+      setColor(event?.color || EVENT_COLORS[0]);
+      setDeleteConfirm(false);
+      setShowDatePicker(false);
+    }
+  }, [visible, event]);
+
+  const daysLeft = getDaysLeft(due);
+  const canSave = name.trim().length > 0;
+
+  function handleSave() {
+    if (!canSave) return;
+    onSave({
+      ...(event ? { id: event.id } : {}),
+      name: name.trim(),
+      due,
+      color,
+    });
+  }
+
+  function handleDelete() {
+    if (event) {
+      onDelete(event.id);
+    }
+  }
+
+  function handleDateChange(_: unknown, selectedDate?: Date) {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDue(formatDateString(selectedDate));
+    }
+  }
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={styles.backdrop} onPress={onClose}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+        >
+          <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.handle} />
+
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>{isNew ? 'Sự kiện mới' : 'Chỉnh sửa'}</Text>
+              {!isNew && (
+                <Pressable
+                  onPress={() => setDeleteConfirm(true)}
+                  style={styles.deleteButton}
+                >
+                  <Text style={styles.deleteButtonText}>🗑 Xóa</Text>
+                </Pressable>
+              )}
+            </View>
+
+            {/* Delete confirmation */}
+            {deleteConfirm && (
+              <View style={styles.deleteConfirm}>
+                <Text style={styles.deleteConfirmText}>Xóa sự kiện này?</Text>
+                <View style={styles.deleteConfirmActions}>
+                  <Pressable
+                    onPress={() => setDeleteConfirm(false)}
+                    style={styles.cancelBtn}
+                  >
+                    <Text style={styles.cancelBtnText}>Hủy</Text>
+                  </Pressable>
+                  <Pressable onPress={handleDelete} style={styles.confirmDeleteBtn}>
+                    <Text style={styles.confirmDeleteBtnText}>Xóa</Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+
+            {/* Name input */}
+            <View style={styles.field}>
+              <Text style={styles.label}>TÊN SỰ KIỆN</Text>
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                placeholder="VD: Deadline dự án, Sinh nhật..."
+                placeholderTextColor={AppColors.text25}
+                style={styles.input}
+              />
+            </View>
+
+            {/* Due date */}
+            <View style={styles.field}>
+              <Text style={styles.label}>NGÀY ĐẾN HẠN</Text>
+              <Pressable onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+                <Text style={styles.dateText}>{formatDisplayDate(due)}</Text>
+              </Pressable>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={new Date(due)}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={handleDateChange}
+                  themeVariant="dark"
+                />
+              )}
+            </View>
+
+            {/* Color picker */}
+            <View style={styles.field}>
+              <Text style={styles.label}>MÀU SẮC</Text>
+              <View style={styles.colorRow}>
+                {EVENT_COLORS.map((c) => (
+                  <Pressable
+                    key={c}
+                    onPress={() => setColor(c)}
+                    style={[
+                      styles.colorDot,
+                      {
+                        backgroundColor: c,
+                        borderColor: color === c ? '#fff' : 'transparent',
+                        transform: [{ scale: color === c ? 1.15 : 1 }],
+                      },
+                      color === c && { shadowColor: c, shadowOpacity: 0.6, shadowRadius: 7, shadowOffset: { width: 0, height: 0 } },
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+
+            {/* Preview */}
+            {name.trim() !== '' && (
+              <View style={[styles.preview, { backgroundColor: hexToRgba(color, 0.06), borderColor: hexToRgba(color, 0.15) }]}>
+                <Text style={[styles.previewDays, { color }]}>{daysLeft}</Text>
+                <View>
+                  <Text style={styles.previewName}>{name}</Text>
+                  <Text style={styles.previewSub}>
+                    {daysLeft > 0
+                      ? `còn ${daysLeft} ngày`
+                      : daysLeft === 0
+                        ? 'hôm nay!'
+                        : `${Math.abs(daysLeft)} ngày trước`}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {/* Save button */}
+            <Pressable onPress={handleSave} disabled={!canSave} style={styles.saveWrapper}>
+              {canSave ? (
+                <LinearGradient
+                  colors={[color, hexToRgba(color, 0.8)]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.saveGradient}
+                >
+                  <Text style={styles.saveText}>{isNew ? '+ Tạo sự kiện' : 'Lưu thay đổi'}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={styles.saveDisabled}>
+                  <Text style={styles.saveDisabledText}>{isNew ? '+ Tạo sự kiện' : 'Lưu thay đổi'}</Text>
+                </View>
+              )}
+            </Pressable>
+          </Pressable>
+        </KeyboardAvoidingView>
+      </Pressable>
+    </Modal>
+  );
+}
+
+function getDefaultDue(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  return formatDateString(d);
+}
+
+function formatDateString(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function formatDisplayDate(due: string): string {
+  const d = new Date(due);
+  return d.toLocaleDateString('vi-VN', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'flex-end',
+  },
+  keyboardView: {
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    backgroundColor: '#1A1A22',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 32,
+    paddingTop: 12,
+  },
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 99,
+    backgroundColor: AppColors.text15,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerTitle: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 17,
+    color: AppColors.text100,
+  },
+  deleteButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: 'rgba(239,68,68,0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(239,68,68,0.2)',
+  },
+  deleteButtonText: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 13,
+    color: '#EF4444',
+  },
+  deleteConfirm: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: 'rgba(239,68,68,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(239,68,68,0.2)',
+    marginBottom: 14,
+  },
+  deleteConfirmText: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 13,
+    color: AppColors.text60,
+  },
+  deleteConfirmActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  cancelBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: AppColors.text06,
+  },
+  cancelBtnText: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 12,
+    color: AppColors.text35,
+  },
+  confirmDeleteBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: '#EF4444',
+  },
+  confirmDeleteBtnText: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 12,
+    color: '#fff',
+  },
+  field: {
+    marginBottom: 16,
+  },
+  label: {
+    fontFamily: AppFonts.mono,
+    fontSize: 11,
+    color: AppColors.text25,
+    letterSpacing: 1,
+    marginBottom: 6,
+  },
+  input: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: AppColors.text06,
+    borderWidth: 1,
+    borderColor: AppColors.text10,
+    color: AppColors.text100,
+    fontFamily: AppFonts.outfit,
+    fontSize: 15,
+  },
+  dateButton: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: AppColors.text06,
+    borderWidth: 1,
+    borderColor: AppColors.text10,
+  },
+  dateText: {
+    fontFamily: AppFonts.mono,
+    fontSize: 15,
+    color: AppColors.text100,
+  },
+  colorRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  colorDot: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    borderWidth: 2.5,
+  },
+  preview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  previewDays: {
+    fontFamily: AppFonts.monoBold,
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  previewName: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 13,
+    color: AppColors.text60,
+  },
+  previewSub: {
+    fontFamily: AppFonts.mono,
+    fontSize: 11,
+    color: AppColors.text25,
+  },
+  saveWrapper: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  saveGradient: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderRadius: 12,
+  },
+  saveText: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 15,
+    color: '#fff',
+  },
+  saveDisabled: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: AppColors.text06,
+    borderRadius: 12,
+  },
+  saveDisabledText: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 15,
+    color: AppColors.text20,
+  },
+});

@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { SettingsProvider } from '@/contexts/SettingsContext';
+import { EventProvider } from '@/contexts/EventContext';
 import * as analytics from '@/utils/analytics';
 
 SplashScreen.preventAutoHideAsync();
@@ -41,12 +42,14 @@ export default function RootLayout() {
 
   return (
     <SettingsProvider>
-      <ThemeProvider value={DarkTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style="light" />
-      </ThemeProvider>
+      <EventProvider>
+        <ThemeProvider value={DarkTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="light" />
+        </ThemeProvider>
+      </EventProvider>
     </SettingsProvider>
   );
 }

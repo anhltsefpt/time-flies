@@ -5,12 +5,15 @@ import { glowShadow } from '@/utils/shadow';
 
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-interface WeekCell {
-  date: Date;
+interface DayCell {
   dayOfYear: number;
   isPast: boolean;
   isToday: boolean;
+}
+
+interface MonthRow {
   month: number;
+  days: DayCell[];
 }
 
 export function YearHeatmap() {
@@ -20,56 +23,44 @@ export function YearHeatmap() {
   const yearStart = new Date(year, 0, 1);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const { weeks, monthLabels, daysPassed, totalDays } = useMemo(() => {
+  const { months, daysPassed, totalDays } = useMemo(() => {
     const yearEnd = new Date(year, 11, 31);
     const total = Math.round((yearEnd.getTime() - yearStart.getTime()) / 86400000) + 1;
-    const startDay = yearStart.getDay() === 0 ? 6 : yearStart.getDay() - 1;
     const passed = Math.round((today.getTime() - yearStart.getTime()) / 86400000) + 1;
-    const allWeeks: (WeekCell | null)[][] = [];
-    let currentWeek: (WeekCell | null)[] = new Array(startDay).fill(null);
-    const mLabels: { month: number; weekIdx: number }[] = [];
-    let lastMonth = -1;
 
-    for (let d = 0; d < total; d++) {
-      const date = new Date(year, 0, 1 + d);
-      const m = date.getMonth();
-      if (m !== lastMonth) {
-        mLabels.push({ month: m, weekIdx: allWeeks.length });
-        lastMonth = m;
+    const monthRows: MonthRow[] = [];
+    let runningDay = 1;
+    for (let m = 0; m < 12; m++) {
+      const daysInMonth = new Date(year, m + 1, 0).getDate();
+      const days: DayCell[] = [];
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, m, d);
+        days.push({
+          dayOfYear: runningDay,
+          isPast: date <= today,
+          isToday: date.getTime() === today.getTime(),
+        });
+        runningDay++;
       }
-      currentWeek.push({
-        date,
-        dayOfYear: d + 1,
-        isPast: date <= today,
-        isToday: date.getTime() === today.getTime(),
-        month: m,
-      });
-      if (currentWeek.length === 7) {
-        allWeeks.push(currentWeek);
-        currentWeek = [];
-      }
+      monthRows.push({ month: m, days });
     }
-    if (currentWeek.length > 0) {
-      while (currentWeek.length < 7) currentWeek.push(null);
-      allWeeks.push(currentWeek);
-    }
-    return { weeks: allWeeks, monthLabels: mLabels, daysPassed: passed, totalDays: total };
+
+    return { months: monthRows, daysPassed: passed, totalDays: total };
   }, [year]);
 
-  // Dynamic cell size based on screen width
-  const padding = 16 * 2 + 20; // card padding + day labels width
-  const gap = 1.5;
-  const cellSize = Math.max(Math.floor((screenWidth - padding - 32) / weeks.length - gap), 3);
+  // Dynamic cell size: fit 31 dots in available width
+  const scrollPadding = 40;   // 20×2 from parent ScrollView
+  const cardPadding = 28;     // 14×2
+  const labelWidth = 30;
+  const labelGap = 6;
+  const dotGap = 2;
+  const available = screenWidth - scrollPadding - cardPadding - labelWidth - labelGap;
+  const cellSize = Math.max(Math.floor((available - dotGap * 30) / 31), 5);
 
-  const getColor = (cell: WeekCell | null) => {
-    if (!cell) return 'transparent';
+  const getColor = (cell: DayCell) => {
     if (cell.isToday) return AppColors.orange;
-    if (!cell.isPast) return AppColors.text04;
-    const ratio = cell.dayOfYear / daysPassed;
-    if (ratio > 0.85) return AppColors.green;
-    if (ratio > 0.6) return AppColors.greenBright;
-    if (ratio > 0.35) return AppColors.greenMid;
-    return AppColors.greenDark;
+    if (!cell.isPast) return AppColors.text10;
+    return AppColors.green;
   };
 
   return (
@@ -83,68 +74,29 @@ export function YearHeatmap() {
         </View>
       </View>
 
-      {/* Heatmap grid */}
+      {/* Heatmap grid — month rows */}
       <View style={styles.card}>
-        {/* Month labels */}
-        <View style={styles.monthLabelsRow}>
-          <View style={{ width: 20 }} />
-          <View style={[styles.monthLabelsContainer, { gap }]}>
-            {weeks.map((_, wi) => {
-              const ml = monthLabels.find((m) => m.weekIdx === wi);
-              return (
-                <View key={wi} style={{ width: cellSize, alignItems: 'flex-start' }}>
-                  {ml ? (
-                    <Text style={styles.monthLabelText}>{monthNames[ml.month]}</Text>
-                  ) : null}
-                </View>
-              );
-            })}
+        {months.map((mr) => (
+          <View key={mr.month} style={styles.monthRow}>
+            <Text style={styles.monthLabel}>{monthNames[mr.month]}</Text>
+            <View style={styles.dotsRow}>
+              {mr.days.map((cell, di) => (
+                <View
+                  key={di}
+                  style={[
+                    {
+                      width: cellSize,
+                      height: cellSize,
+                      borderRadius: cellSize / 2,
+                      backgroundColor: getColor(cell),
+                    },
+                    cell.isToday && glowShadow(AppColors.orange, 6),
+                  ]}
+                />
+              ))}
+            </View>
           </View>
-        </View>
-
-        <View style={styles.gridContainer}>
-          {/* Day labels */}
-          <View style={styles.dayLabels}>
-            {['M', '', 'W', '', 'F', '', 'S'].map((dl, i) => (
-              <View key={i} style={[styles.dayLabelCell, { height: cellSize }]}>
-                <Text style={styles.dayLabelText}>{dl}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Week columns */}
-          <View style={[styles.weeksContainer, { gap }]}>
-            {weeks.map((week, wi) => (
-              <View key={wi} style={[styles.weekCol, { gap }]}>
-                {week.map((cell, di) => (
-                  <View
-                    key={di}
-                    style={[
-                      {
-                        width: cellSize,
-                        height: cellSize,
-                        borderRadius: Math.max(cellSize * 0.23, 1),
-                        backgroundColor: getColor(cell),
-                      },
-                      cell?.isToday && glowShadow(AppColors.orange, 6),
-                    ]}
-                  />
-                ))}
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Legend */}
-        <View style={styles.legend}>
-          <Text style={styles.legendText}>Future</Text>
-          {[AppColors.text04, AppColors.greenDark, AppColors.greenMid, AppColors.greenBright, AppColors.green].map((c, i) => (
-            <View key={i} style={[styles.legendDot, { backgroundColor: c }]} />
-          ))}
-          <Text style={styles.legendText}>Recent</Text>
-          <View style={[styles.legendDot, { backgroundColor: AppColors.orange }, glowShadow(AppColors.orange, 4)]} />
-          <Text style={styles.legendText}>Today</Text>
-        </View>
+        ))}
       </View>
 
       {/* Monthly grid */}
@@ -230,69 +182,30 @@ const styles = StyleSheet.create({
     borderColor: AppColors.surfaceBorder,
     overflow: 'hidden',
   },
-  monthLabelsRow: {
-    flexDirection: 'row',
-    marginBottom: 4,
-  },
-  monthLabelsContainer: {
-    flexDirection: 'row',
-    overflow: 'hidden',
-    flex: 1,
-  },
-  monthLabelText: {
-    fontFamily: AppFonts.mono,
-    fontSize: 8,
-    color: AppColors.text25,
-  },
-  gridContainer: {
-    flexDirection: 'row',
-  },
-  dayLabels: {
-    marginRight: 4,
-    gap: 1.5,
-  },
-  dayLabelCell: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingRight: 2,
-    width: 16,
-  },
-  dayLabelText: {
-    fontFamily: AppFonts.mono,
-    fontSize: 7,
-    color: AppColors.text20,
-  },
-  weeksContainer: {
-    flexDirection: 'row',
-    overflow: 'hidden',
-    flex: 1,
-  },
-  weekCol: {
-    flexDirection: 'column',
-  },
-  legend: {
+  monthRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: 4,
-    marginTop: 10,
+    marginBottom: 4,
   },
-  legendText: {
+  monthLabel: {
+    width: 30,
+    marginRight: 6,
     fontFamily: AppFonts.mono,
-    fontSize: 8,
+    fontSize: 9,
     color: AppColors.text25,
   },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 1.5,
+  dotsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 2,
+    flex: 1,
   },
   monthlySection: {
     marginTop: 20,
   },
   monthlyLabel: {
     fontFamily: AppFonts.outfit,
-    fontSize: 12,
+    fontSize: 13,
     color: AppColors.text25,
     letterSpacing: 1.5,
     marginBottom: 12,
@@ -321,7 +234,7 @@ const styles = StyleSheet.create({
   },
   monthName: {
     fontFamily: AppFonts.outfitSemiBold,
-    fontSize: 11,
+    fontSize: 14,
     color: AppColors.text20,
   },
   monthTrack: {
@@ -338,7 +251,7 @@ const styles = StyleSheet.create({
   },
   monthPct: {
     fontFamily: AppFonts.mono,
-    fontSize: 10,
+    fontSize: 12,
     color: AppColors.text25,
     marginTop: 4,
   },

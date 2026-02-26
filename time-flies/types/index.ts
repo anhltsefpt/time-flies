@@ -51,3 +51,10 @@ export interface LifePhase {
   range: [number, number];
   color: string;
 }
+
+export interface FiniteEvent {
+  id: number;
+  name: string;
+  due: string;       // 'YYYY-MM-DD'
+  color: string;     // one of 8 accent colors
+}
