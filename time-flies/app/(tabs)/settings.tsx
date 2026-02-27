@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, Linking, TouchableOpacity, Platform, Image, Keyboard } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -16,6 +18,7 @@ let hasAnimated = false;
 export default function SettingsScreen() {
   const { settings, updateSetting } = useSettings();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const shouldAnimate = useRef(!hasAnimated);
   hasAnimated = true;
@@ -49,6 +52,24 @@ export default function SettingsScreen() {
         {/* Header */}
         <Animated.View entering={entering(FadeInDown.duration(600))} style={styles.headerSection}>
           <Text style={styles.headerLabel}>SETTINGS</Text>
+        </Animated.View>
+
+        {/* Premium Card */}
+        <Animated.View entering={entering(FadeInUp.duration(500))}>
+          <TouchableOpacity onPress={() => router.push('/paywall')} activeOpacity={0.8}>
+            <LinearGradient
+              colors={['rgba(249,115,22,0.12)', 'rgba(249,115,22,0.04)']}
+              style={styles.premiumCard}>
+              <View style={styles.premiumContent}>
+                <Text style={styles.premiumIcon}>{'\u2B50'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.premiumTitle}>Finite Premium</Text>
+                  <Text style={styles.premiumDesc}>Unlock all features</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={AppColors.orange} />
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Profile Section */}
@@ -272,6 +293,32 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: AppColors.text35,
     letterSpacing: 2,
+  },
+  premiumCard: {
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(249,115,22,0.2)',
+    marginBottom: 16,
+  },
+  premiumContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  premiumIcon: {
+    fontSize: 24,
+  },
+  premiumTitle: {
+    fontFamily: AppFonts.outfitSemiBold,
+    fontSize: 15,
+    color: AppColors.text85,
+  },
+  premiumDesc: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 12,
+    color: AppColors.text35,
+    marginTop: 2,
   },
   card: {
     backgroundColor: AppColors.surfaceBg,
