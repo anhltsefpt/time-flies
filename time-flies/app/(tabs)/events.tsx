@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { AppColors, AppFonts } from '@/constants/theme';
-import { SectionLabel } from '@/components/SectionLabel';
-import { EventCard } from '@/components/EventCard';
-import { EventEmptyState } from '@/components/EventEmptyState';
-import { EventModal } from '@/components/EventModal';
-import { useEvents } from '@/contexts/EventContext';
-import { splitEvents } from '@/utils/events';
-import type { FiniteEvent } from '@/types';
+import { EventCard } from "@/components/EventCard";
+import { EventEmptyState } from "@/components/EventEmptyState";
+import { EventModal } from "@/components/EventModal";
+import { AppColors, AppFonts } from "@/constants/theme";
+import { useEvents } from "@/contexts/EventContext";
+import type { FiniteEvent } from "@/types";
+import { splitEvents } from "@/utils/events";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function EventsScreen() {
   const insets = useSafeAreaInsets();
@@ -18,8 +17,16 @@ export default function EventsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingEvent, setEditingEvent] = useState<FiniteEvent | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [pastCollapsed, setPastCollapsed] = useState(true);
 
-  const { upcoming, past } = splitEvents(events);
+  const { upcoming, past } = useMemo(() => splitEvents(events), [events]);
+
+  // If no upcoming events, show past expanded by default
+  useEffect(() => {
+    if (upcoming.length === 0 && past.length > 0) {
+      setPastCollapsed(false);
+    }
+  }, [upcoming.length, past.length]);
 
   useEffect(() => {
     if (toast) {
@@ -38,31 +45,46 @@ export default function EventsScreen() {
     setModalVisible(true);
   }, []);
 
-  const handleSave = useCallback((evt: Omit<FiniteEvent, 'id'> & { id?: number }) => {
-    if (evt.id) {
-      updateEvent(evt as FiniteEvent);
-      setToast('Updated ✓');
-    } else {
-      addEvent(evt);
-      setToast('Added ✓');
-    }
-    setModalVisible(false);
-  }, [addEvent, updateEvent]);
+  const handleSave = useCallback(
+    (evt: Omit<FiniteEvent, "id"> & { id?: number }) => {
+      if (evt.id) {
+        updateEvent(evt as FiniteEvent);
+        setToast("Updated");
+      } else {
+        addEvent(evt);
+        setToast("Added");
+      }
+      setModalVisible(false);
+    },
+    [addEvent, updateEvent],
+  );
 
-  const handleDelete = useCallback((id: number) => {
-    deleteEvent(id);
-    setToast('Deleted ✓');
-    setModalVisible(false);
-  }, [deleteEvent]);
+  const handleDelete = useCallback(
+    (id: number) => {
+      deleteEvent(id);
+      setToast("Deleted");
+      setModalVisible(false);
+    },
+    [deleteEvent],
+  );
+
+  const handleSwipeDelete = useCallback(
+    (id: number) => {
+      deleteEvent(id);
+      setToast("Deleted");
+    },
+    [deleteEvent],
+  );
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Sub-header */}
-      <View style={styles.subHeader}>
+      {/* Header */}
+      <View style={styles.header}>
         <View>
-          <Text style={styles.subTitle}>📅 Events</Text>
-          <Text style={styles.subCount}>
-            {upcoming.length} upcoming • {past.length} past
+          <Text style={styles.headerTitle}>Events</Text>
+          <Text style={styles.headerCount}>
+            {upcoming.length} upcoming
+            {past.length > 0 ? ` · ${past.length} past` : ""}
           </Text>
         </View>
         <Pressable onPress={openNew} style={styles.addButton}>
@@ -86,26 +108,65 @@ export default function EventsScreen() {
           <EventEmptyState onAdd={openNew} />
         ) : (
           <>
+            {/* Upcoming */}
             {upcoming.length > 0 && (
-              <View style={styles.section}>
-                <SectionLabel text="UPCOMING" />
+              <Animated.View
+                entering={FadeInDown.delay(200).duration(500)}
+                style={styles.section}
+              >
+                <Text style={styles.sectionLabel}>UPCOMING</Text>
                 <View style={styles.cardList}>
                   {upcoming.map((e, i) => (
-                    <EventCard key={e.id} event={e} index={i} onPress={() => openEdit(e)} />
+                    <EventCard
+                      key={e.id}
+                      event={e}
+                      index={i}
+                      onPress={() => openEdit(e)}
+                      onDelete={handleSwipeDelete}
+                    />
                   ))}
                 </View>
-              </View>
+              </Animated.View>
             )}
 
+            {/* Divider + Past section */}
             {past.length > 0 && (
-              <View style={styles.section}>
-                <SectionLabel text="PAST" />
-                <View style={styles.cardList}>
-                  {past.map((e, i) => (
-                    <EventCard key={e.id} event={e} index={i} onPress={() => openEdit(e)} />
-                  ))}
+              <Animated.View
+                entering={FadeInDown.delay(400).duration(500)}
+                style={styles.pastSection}
+              >
+                {/* Divider */}
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>completed</Text>
+                  <View style={styles.dividerLine} />
                 </View>
-              </View>
+
+                {/* Collapsible header */}
+                <Pressable
+                  onPress={() => setPastCollapsed((prev) => !prev)}
+                  style={styles.pastHeader}
+                >
+                  <Text style={styles.sectionLabel}>PAST ({past.length})</Text>
+                  <Text style={styles.collapseIcon}>
+                    {pastCollapsed ? "▸" : "▾"}
+                  </Text>
+                </Pressable>
+
+                {/* Past cards */}
+                {!pastCollapsed && (
+                  <View style={styles.cardList}>
+                    {past.map((e, i) => (
+                      <EventCard
+                        key={e.id}
+                        event={e}
+                        index={i}
+                        onPress={() => openEdit(e)}
+                      />
+                    ))}
+                  </View>
+                )}
+              </Animated.View>
             )}
           </>
         )}
@@ -121,7 +182,11 @@ export default function EventsScreen() {
 
       {/* Toast */}
       {toast && (
-        <Animated.View entering={FadeIn.duration(300)} exiting={FadeOut.duration(300)} style={styles.toast}>
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          exiting={FadeOut.duration(300)}
+          style={styles.toast}
+        >
           <Text style={styles.toastText}>{toast}</Text>
         </Animated.View>
       )}
@@ -134,21 +199,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: AppColors.background,
   },
-  subHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: AppColors.surfaceBorder,
   },
-  subTitle: {
+  headerTitle: {
     fontFamily: AppFonts.outfitBold,
-    fontSize: 18,
+    fontSize: 20,
     color: AppColors.text100,
   },
-  subCount: {
+  headerCount: {
     fontFamily: AppFonts.mono,
     fontSize: 11,
     color: AppColors.text25,
@@ -156,7 +219,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   addGradient: {
     paddingVertical: 10,
@@ -166,7 +229,7 @@ const styles = StyleSheet.create({
   addText: {
     fontFamily: AppFonts.outfitSemiBold,
     fontSize: 14,
-    color: '#fff',
+    color: "#fff",
   },
   scroll: {
     flex: 1,
@@ -174,25 +237,59 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 100,
-    paddingTop: 16,
+    paddingTop: 8,
+    gap: 20,
   },
   section: {
-    marginBottom: 24,
     gap: 10,
+  },
+  sectionLabel: {
+    fontFamily: AppFonts.outfit,
+    fontSize: 12,
+    color: AppColors.text35,
+    letterSpacing: 1.5,
   },
   cardList: {
     gap: 8,
   },
+  pastSection: {
+    gap: 10,
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginVertical: 4,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: AppColors.text08,
+  },
+  dividerText: {
+    fontFamily: AppFonts.mono,
+    fontSize: 11,
+    color: AppColors.text20,
+  },
+  pastHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  collapseIcon: {
+    fontSize: 14,
+    color: AppColors.text25,
+  },
   toast: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 100,
-    alignSelf: 'center',
+    alignSelf: "center",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 99,
-    backgroundColor: 'rgba(34,197,94,0.15)',
+    backgroundColor: "rgba(34,197,94,0.15)",
     borderWidth: 1,
-    borderColor: 'rgba(34,197,94,0.3)',
+    borderColor: "rgba(34,197,94,0.3)",
   },
   toastText: {
     fontFamily: AppFonts.outfit,
