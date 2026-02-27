@@ -53,4 +53,5 @@ export interface FiniteEvent {
   name: string;
   due: string;       // 'YYYY-MM-DD'
   color: string;     // one of 8 accent colors
+  created?: string;  // 'YYYY-MM-DD' — auto-set on creation
 }

@@ -52,7 +52,7 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
   }, [events, isLoaded]);
 
   const addEvent = useCallback((event: Omit<FiniteEvent, 'id'>) => {
-    const newEvent = { ...event, id: nextId++ };
+    const newEvent = { ...event, id: nextId++, created: new Date().toISOString().slice(0, 10) };
     setEvents((prev) => [...prev, newEvent]);
     track('event_created', { color: event.color });
   }, []);
