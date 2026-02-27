@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AppColors, AppFonts } from '@/constants/theme';
 import { CountdownBadge } from '@/components/CountdownBadge';
-import { getDaysLeft, getEventProgress, formatVietnameseDate, hexToRgba } from '@/utils/events';
+import { getDaysLeft, getEventProgress, formatDate, hexToRgba } from '@/utils/events';
 import type { FiniteEvent } from '@/types';
 
 interface EventCardProps {
@@ -54,7 +54,7 @@ export function EventCard({ event, index, onPress }: EventCardProps) {
             styles.date,
             { color: isPast ? 'rgba(255,255,255,0.35)' : AppColors.text25 },
           ]}>
-            {formatVietnameseDate(event.due)}
+            {formatDate(event.due)}
           </Text>
           {!isPast && (
             <View style={styles.progressTrack}>

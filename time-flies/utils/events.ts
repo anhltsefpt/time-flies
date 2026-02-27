@@ -24,9 +24,9 @@ export function getEventProgress(due: string): number {
   return Math.min((elapsed / totalDays) * 100, 100);
 }
 
-export function formatVietnameseDate(due: string): string {
+export function formatDate(due: string): string {
   const date = new Date(due);
-  return date.toLocaleDateString('vi-VN', {
+  return date.toLocaleDateString('en-US', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',

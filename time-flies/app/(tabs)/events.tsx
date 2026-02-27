@@ -41,17 +41,17 @@ export default function EventsScreen() {
   const handleSave = useCallback((evt: Omit<FiniteEvent, 'id'> & { id?: number }) => {
     if (evt.id) {
       updateEvent(evt as FiniteEvent);
-      setToast('Đã cập nhật ✓');
+      setToast('Updated ✓');
     } else {
       addEvent(evt);
-      setToast('Đã thêm ✓');
+      setToast('Added ✓');
     }
     setModalVisible(false);
   }, [addEvent, updateEvent]);
 
   const handleDelete = useCallback((id: number) => {
     deleteEvent(id);
-    setToast('Đã xóa ✓');
+    setToast('Deleted ✓');
     setModalVisible(false);
   }, [deleteEvent]);
 
@@ -60,9 +60,9 @@ export default function EventsScreen() {
       {/* Sub-header */}
       <View style={styles.subHeader}>
         <View>
-          <Text style={styles.subTitle}>📅 Sự kiện</Text>
+          <Text style={styles.subTitle}>📅 Events</Text>
           <Text style={styles.subCount}>
-            {upcoming.length} sắp tới • {past.length} đã qua
+            {upcoming.length} upcoming • {past.length} past
           </Text>
         </View>
         <Pressable onPress={openNew} style={styles.addButton}>
@@ -72,7 +72,7 @@ export default function EventsScreen() {
             end={{ x: 1, y: 0 }}
             style={styles.addGradient}
           >
-            <Text style={styles.addText}>+ Thêm</Text>
+            <Text style={styles.addText}>+ Add</Text>
           </LinearGradient>
         </Pressable>
       </View>
@@ -88,7 +88,7 @@ export default function EventsScreen() {
           <>
             {upcoming.length > 0 && (
               <View style={styles.section}>
-                <SectionLabel text="SẮP TỚI" />
+                <SectionLabel text="UPCOMING" />
                 <View style={styles.cardList}>
                   {upcoming.map((e, i) => (
                     <EventCard key={e.id} event={e} index={i} onPress={() => openEdit(e)} />
@@ -99,7 +99,7 @@ export default function EventsScreen() {
 
             {past.length > 0 && (
               <View style={styles.section}>
-                <SectionLabel text="ĐÃ QUA" />
+                <SectionLabel text="PAST" />
                 <View style={styles.cardList}>
                   {past.map((e, i) => (
                     <EventCard key={e.id} event={e} index={i} onPress={() => openEdit(e)} />

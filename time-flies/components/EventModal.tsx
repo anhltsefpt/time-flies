@@ -80,13 +80,13 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
 
             {/* Header */}
             <View style={styles.header}>
-              <Text style={styles.headerTitle}>{isNew ? 'Sự kiện mới' : 'Chỉnh sửa'}</Text>
+              <Text style={styles.headerTitle}>{isNew ? 'New Event' : 'Edit Event'}</Text>
               {!isNew && (
                 <Pressable
                   onPress={() => setDeleteConfirm(true)}
                   style={styles.deleteButton}
                 >
-                  <Text style={styles.deleteButtonText}>🗑 Xóa</Text>
+                  <Text style={styles.deleteButtonText}>🗑 Delete</Text>
                 </Pressable>
               )}
             </View>
@@ -94,16 +94,16 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
             {/* Delete confirmation */}
             {deleteConfirm && (
               <View style={styles.deleteConfirm}>
-                <Text style={styles.deleteConfirmText}>Xóa sự kiện này?</Text>
+                <Text style={styles.deleteConfirmText}>Delete this event?</Text>
                 <View style={styles.deleteConfirmActions}>
                   <Pressable
                     onPress={() => setDeleteConfirm(false)}
                     style={styles.cancelBtn}
                   >
-                    <Text style={styles.cancelBtnText}>Hủy</Text>
+                    <Text style={styles.cancelBtnText}>Cancel</Text>
                   </Pressable>
                   <Pressable onPress={handleDelete} style={styles.confirmDeleteBtn}>
-                    <Text style={styles.confirmDeleteBtnText}>Xóa</Text>
+                    <Text style={styles.confirmDeleteBtnText}>Delete</Text>
                   </Pressable>
                 </View>
               </View>
@@ -111,11 +111,11 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
 
             {/* Name input */}
             <View style={styles.field}>
-              <Text style={styles.label}>TÊN SỰ KIỆN</Text>
+              <Text style={styles.label}>EVENT NAME</Text>
               <TextInput
                 value={name}
                 onChangeText={setName}
-                placeholder="VD: Deadline dự án, Sinh nhật..."
+                placeholder="e.g. Project deadline, Birthday..."
                 placeholderTextColor={AppColors.text25}
                 style={styles.input}
               />
@@ -123,7 +123,7 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
 
             {/* Due date */}
             <View style={styles.field}>
-              <Text style={styles.label}>NGÀY ĐẾN HẠN</Text>
+              <Text style={styles.label}>DUE DATE</Text>
               <Pressable onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
                 <Text style={styles.dateText}>{formatDisplayDate(due)}</Text>
               </Pressable>
@@ -140,7 +140,7 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
 
             {/* Color picker */}
             <View style={styles.field}>
-              <Text style={styles.label}>MÀU SẮC</Text>
+              <Text style={styles.label}>COLOR</Text>
               <View style={styles.colorRow}>
                 {EVENT_COLORS.map((c) => (
                   <Pressable
@@ -168,10 +168,10 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
                   <Text style={styles.previewName}>{name}</Text>
                   <Text style={styles.previewSub}>
                     {daysLeft > 0
-                      ? `còn ${daysLeft} ngày`
+                      ? `${daysLeft} days left`
                       : daysLeft === 0
-                        ? 'hôm nay!'
-                        : `${Math.abs(daysLeft)} ngày trước`}
+                        ? 'today!'
+                        : `${Math.abs(daysLeft)} days ago`}
                   </Text>
                 </View>
               </View>
@@ -186,11 +186,11 @@ export function EventModal({ visible, event, onSave, onDelete, onClose }: EventM
                   end={{ x: 1, y: 1 }}
                   style={styles.saveGradient}
                 >
-                  <Text style={styles.saveText}>{isNew ? '+ Tạo sự kiện' : 'Lưu thay đổi'}</Text>
+                  <Text style={styles.saveText}>{isNew ? '+ Create Event' : 'Save Changes'}</Text>
                 </LinearGradient>
               ) : (
                 <View style={styles.saveDisabled}>
-                  <Text style={styles.saveDisabledText}>{isNew ? '+ Tạo sự kiện' : 'Lưu thay đổi'}</Text>
+                  <Text style={styles.saveDisabledText}>{isNew ? '+ Create Event' : 'Save Changes'}</Text>
                 </View>
               )}
             </Pressable>
@@ -216,7 +216,7 @@ function formatDateString(d: Date): string {
 
 function formatDisplayDate(due: string): string {
   const d = new Date(due);
-  return d.toLocaleDateString('vi-VN', {
+  return d.toLocaleDateString('en-US', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',

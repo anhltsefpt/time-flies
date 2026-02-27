@@ -10,10 +10,10 @@ export function EventEmptyState({ onAdd }: EventEmptyStateProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.emoji}>📅</Text>
-      <Text style={styles.title}>Chưa có sự kiện nào</Text>
-      <Text style={styles.subtitle}>Tạo sự kiện để đếm ngược đến ngày quan trọng</Text>
+      <Text style={styles.title}>No events yet</Text>
+      <Text style={styles.subtitle}>Create events to count down to important dates</Text>
       <Pressable onPress={onAdd} style={styles.button}>
-        <Text style={styles.buttonText}>+ Tạo sự kiện đầu tiên</Text>
+        <Text style={styles.buttonText}>+ Create first event</Text>
       </Pressable>
     </View>
   );

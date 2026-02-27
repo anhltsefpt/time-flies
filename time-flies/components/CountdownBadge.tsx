@@ -52,13 +52,13 @@ export function CountdownBadge({ days, color, progress }: CountdownBadgeProps) {
           color: isPast ? 'rgba(255,255,255,0.40)' : color,
         },
       ]}>
-        {isToday ? 'HÔM' : isPast ? Math.abs(days) : days}
+        {isToday ? 'TO' : isPast ? Math.abs(days) : days}
       </Text>
       <Text style={[
         styles.unit,
         { color: isPast ? 'rgba(255,255,255,0.35)' : hexToRgba(color, 0.47) },
       ]}>
-        {isToday ? 'NAY' : 'ngày'}
+        {isToday ? 'DAY' : 'days'}
       </Text>
     </View>
   );
