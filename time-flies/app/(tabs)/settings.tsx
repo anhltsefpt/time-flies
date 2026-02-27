@@ -169,41 +169,8 @@ export default function SettingsScreen() {
           </LinearGradient>
         </Animated.View>
 
-        {/* Notifications */}
-        <Animated.View entering={entering(FadeInUp.delay(200).duration(500))} style={styles.card}>
-          <Text style={styles.sectionTitle}>🔔 NOTIFICATIONS</Text>
-          <SettingToggle
-            label="Milestone Alerts"
-            value={settings.notifyMilestones}
-            onChange={() => updateSetting('notifyMilestones', !settings.notifyMilestones)}
-            icon="🏁"
-            description={'"2026 is now 50% over!"'}
-          />
-          <SettingToggle
-            label="Daily Reminder"
-            value={settings.notifyDaily}
-            onChange={() => updateSetting('notifyDaily', !settings.notifyDaily)}
-            icon="⏰"
-            description="Get a daily nudge"
-          />
-          {settings.notifyDaily && (
-            <View style={styles.indentedSlider}>
-              <SettingSlider
-                label="Reminder Time"
-                value={settings.dailyNotifyTime}
-                min={6}
-                max={22}
-                onChange={(v) => updateSetting('dailyNotifyTime', v)}
-                format={(v) => `${String(v).padStart(2, '0')}:00`}
-                icon="🕐"
-                color={AppColors.yellow}
-              />
-            </View>
-          )}
-        </Animated.View>
-
         {/* Display */}
-        <Animated.View entering={entering(FadeInUp.delay(300).duration(500))} style={styles.card}>
+        <Animated.View entering={entering(FadeInUp.delay(200).duration(500))} style={styles.card}>
           <Text style={styles.sectionTitle}>🎨 DISPLAY</Text>
           <SettingToggle
             label="Show Seconds"
@@ -222,7 +189,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Life stats */}
-        <Animated.View entering={entering(FadeInUp.delay(400).duration(500))}>
+        <Animated.View entering={entering(FadeInUp.delay(300).duration(500))}>
           <LinearGradient
             colors={['rgba(245,158,11,0.06)', 'rgba(236,72,153,0.04)']}
             style={styles.lifeStatsCard}>
@@ -261,7 +228,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* Contact & Feedback */}
-        <Animated.View entering={entering(FadeInUp.delay(450).duration(500))} style={styles.contactCard}>
+        <Animated.View entering={entering(FadeInUp.delay(350).duration(500))} style={styles.contactCard}>
           <Text style={styles.sectionTitle}>✉️ CONTACT & FEEDBACK</Text>
           <Text style={styles.contactDescription}>
             Have a suggestion or found a bug? We'd love to hear from you.
@@ -272,7 +239,7 @@ export default function SettingsScreen() {
         </Animated.View>
 
         {/* App info */}
-        <Animated.View entering={entering(FadeInUp.delay(500).duration(500))} style={styles.appInfo}>
+        <Animated.View entering={entering(FadeInUp.delay(400).duration(500))} style={styles.appInfo}>
           <Image source={require('@/assets/images/icon-transparent.png')} style={styles.appIcon} />
           <Text style={styles.appName}>Finite</Text>
           <Text style={styles.appVersion}>v{Constants.expoConfig?.version ?? '1.0.0'} • Made with ❤️</Text>
@@ -393,10 +360,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: AppColors.text25,
     marginTop: 2,
-  },
-  indentedSlider: {
-    paddingLeft: 34,
-    marginTop: 8,
   },
   contactCard: {
     backgroundColor: AppColors.surfaceBg,

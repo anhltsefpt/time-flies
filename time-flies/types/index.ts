@@ -5,10 +5,6 @@ export interface Settings {
   sleepEnd: number;
   name: string;
   theme: 'dark';
-  notifications: boolean;
-  notifyMilestones: boolean;
-  notifyDaily: boolean;
-  dailyNotifyTime: number;
   showLifeTab: boolean;
   showSeconds: boolean;
   language: 'vi';
