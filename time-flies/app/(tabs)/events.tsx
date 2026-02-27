@@ -80,13 +80,6 @@ export default function EventsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Events</Text>
-          <Text style={styles.headerCount}>
-            {upcoming.length} upcoming
-            {past.length > 0 ? ` · ${past.length} past` : ""}
-          </Text>
-        </View>
         <Pressable onPress={openNew} style={styles.addButton}>
           <LinearGradient
             colors={[AppColors.orange, AppColors.orangeLight]}
@@ -202,20 +195,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     paddingHorizontal: 20,
     paddingVertical: 12,
-  },
-  headerTitle: {
-    fontFamily: AppFonts.outfitBold,
-    fontSize: 20,
-    color: AppColors.text100,
-  },
-  headerCount: {
-    fontFamily: AppFonts.mono,
-    fontSize: 11,
-    color: AppColors.text25,
-    marginTop: 2,
   },
   addButton: {
     borderRadius: 10,

@@ -82,11 +82,11 @@ export function EventModal({
             <View style={styles.handle} />
             <ScrollView showsVerticalScrollIndicator={false}>
               {/* Header */}
-              <View style={styles.header}>
-                <Text style={styles.headerTitle}>
-                  {isNew ? "New Event" : "Edit Event"}
-                </Text>
-              </View>
+              {isNew && (
+                <View style={styles.header}>
+                  <Text style={styles.headerTitle}>New Event</Text>
+                </View>
+              )}
 
               {/* Name input */}
               <View style={styles.field}>

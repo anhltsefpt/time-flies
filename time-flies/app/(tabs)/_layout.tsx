@@ -1,11 +1,10 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Text } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { AppColors } from '@/constants/theme';
-import { useSettings } from '@/contexts/SettingsContext';
-import { track } from '@/utils/analytics';
+import { HapticTab } from "@/components/haptic-tab";
+import { AppColors } from "@/constants/theme";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function TabLayout() {
   const { settings } = useSettings();
@@ -16,7 +15,6 @@ export default function TabLayout() {
         state: (e) => {
           const state = e.data.state;
           const route = state.routes[state.index];
-          track('tab_changed', { tab: route.name });
         },
       }}
       screenOptions={{
@@ -32,51 +30,88 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           fontSize: 10,
-          fontFamily: 'Outfit-Medium',
+          fontFamily: "Outfit-Medium",
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>⏱</Text>,
+          title: "Today",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "time" : "time-outline"}
+              size={24}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="year"
         options={{
-          title: 'Year',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🟩</Text>,
+          title: "Year",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "grid" : "grid-outline"}
+              size={24}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="events"
         options={{
-          title: 'Events',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>📅</Text>,
+          title: "Events",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "calendar" : "calendar-outline"}
+              size={24}
+              color={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="life"
         options={{
-          title: 'Life',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>👤</Text>,
-          href: settings.showLifeTab ? '/life' : null,
+          title: "Life",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+          href: settings.showLifeTab ? "/life" : null,
         }}
       />
       <Tabs.Screen
         name="quotes"
         options={{
-          title: 'Reflect',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>💬</Text>,
+          title: "Reflect",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "chatbubble" : "chatbubble-outline"}
+              size={24}
+              color={color}
+            />
+          ),
           href: null,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>⚙️</Text>,
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "settings" : "settings-outline"}
+              size={24}
+              color={color}
+            />
+          ),
         }}
       />
     </Tabs>
