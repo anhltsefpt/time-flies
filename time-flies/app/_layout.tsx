@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 import { EventProvider } from "@/contexts/EventContext";
+import { PurchaseProvider } from "@/contexts/PurchaseContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import * as analytics from "@/utils/analytics";
 
@@ -43,8 +44,9 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SettingsProvider>
-        <EventProvider>
+      <PurchaseProvider>
+        <SettingsProvider>
+          <EventProvider>
           <ThemeProvider value={DarkTheme}>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -55,8 +57,9 @@ export default function RootLayout() {
             </Stack>
             <StatusBar style="light" />
           </ThemeProvider>
-        </EventProvider>
-      </SettingsProvider>
+          </EventProvider>
+        </SettingsProvider>
+      </PurchaseProvider>
     </GestureHandlerRootView>
   );
 }
