@@ -8,7 +8,6 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import Svg, { Circle } from 'react-native-svg';
 import { AppFonts } from '@/constants/theme';
 import { hexToRgba } from '@/utils/events';
 import { glowShadow } from '@/utils/shadow';
@@ -46,27 +45,15 @@ export function CountdownBadge({ days, color, pulse }: CountdownBadgeProps) {
   }));
 
   const displayNum = isPast ? Math.abs(days) : days;
-  const size = 56;
-  const r = 24;
 
   return (
     <View style={[
       styles.badge,
       {
-        backgroundColor: isPast ? 'rgba(255,255,255,0.03)' : undefined,
+        backgroundColor: isPast ? 'rgba(255,255,255,0.03)' : color,
       },
       isUrgent && !isPast ? glowShadow(color, pulse ? 12 : 8) : undefined,
     ]}>
-      {!isPast && (
-        <Svg width={size} height={size} style={styles.ring}>
-          <Circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            fill={color}
-          />
-        </Svg>
-      )}
       <Animated.Text style={[
         styles.number,
         {
@@ -81,7 +68,7 @@ export function CountdownBadge({ days, color, pulse }: CountdownBadgeProps) {
         styles.label,
         { color: isPast ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.7)' },
       ]}>
-        {isToday ? 'TODAY' : isPast ? 'AGO' : 'DAYS'}
+        {isToday ? 'TODAY' : isPast ? 'AGO' : 'days left'}
       </Text>
     </View>
   );
@@ -91,24 +78,20 @@ const styles = StyleSheet.create({
   badge: {
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  ring: {
-    position: 'absolute',
-    transform: [{ rotate: '-90deg' }],
-  },
   number: {
-    fontFamily: AppFonts.outfitBold,
-    fontWeight: '800',
+    fontFamily: AppFonts.outfitSemiBold,
+    fontWeight: '600',
     lineHeight: 22,
   },
   label: {
     fontFamily: AppFonts.mono,
     fontSize: 8,
-    fontWeight: '600',
+    fontWeight: '700',
     marginTop: 1,
   },
 });

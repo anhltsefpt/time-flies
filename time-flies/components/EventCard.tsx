@@ -54,12 +54,6 @@ export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
       onPress={onPress}
       style={[styles.card, tierStyles.card]}
     >
-      <CountdownBadge
-        days={days}
-        color={event.color}
-        pulse={tier === 'critical'}
-      />
-
       <View style={styles.info}>
         <Text
           numberOfLines={1}
@@ -92,7 +86,11 @@ export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
         })()}
       </View>
 
-      <Text style={styles.chevron}>&rsaquo;</Text>
+      <CountdownBadge
+        days={days}
+        color={event.color}
+        pulse={tier === 'critical'}
+      />
     </Pressable>
   );
 
@@ -200,12 +198,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: AppFonts.outfitSemiBold,
-    fontSize: 15,
+    fontSize: 17,
     marginBottom: 4,
   },
   date: {
     fontFamily: AppFonts.mono,
-    fontSize: 12,
+    fontSize: 13,
   },
   progressBlock: {
     marginTop: 6,
@@ -228,11 +226,6 @@ const styles = StyleSheet.create({
     fontFamily: AppFonts.mono,
     fontSize: 11,
     color: 'rgba(255,255,255,0.35)',
-  },
-  chevron: {
-    fontSize: 20,
-    color: AppColors.text15,
-    fontWeight: '300',
   },
   swipeDelete: {
     backgroundColor: '#EF4444',
