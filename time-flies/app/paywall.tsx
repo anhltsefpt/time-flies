@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions, ActivityIndicator, Alert, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,6 +20,7 @@ import Animated, {
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
 import { usePurchases, type PlanId } from '@/contexts/PurchaseContext';
+import { track } from '@/utils/analytics';
 
 const features = [
   {
@@ -145,6 +146,7 @@ export default function PaywallScreen() {
   }), [products]);
 
   const handlePurchase = async () => {
+    track('paywall_purchase_pressed', { plan: selected });
     try {
       const success = await purchase(selected);
       if (success) router.back();
@@ -154,6 +156,7 @@ export default function PaywallScreen() {
   };
 
   const handleRestore = async () => {
+    track('paywall_restore_pressed');
     const success = await restorePurchases();
     if (success) {
       Alert.alert('Restored!', 'Your premium access has been restored.', [
@@ -183,7 +186,7 @@ export default function PaywallScreen() {
         {/* Close button — absolute top-right */}
         <Animated.View entering={FadeInDown.duration(400)} style={styles.closeButtonWrap}>
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => { track('paywall_closed'); router.back(); }}
             style={styles.closeButton}
             activeOpacity={0.7}>
             <Text style={styles.closeIcon}>{'\u2715'}</Text>
@@ -238,7 +241,7 @@ export default function PaywallScreen() {
         <Animated.View
           entering={FadeInUp.duration(600).delay(500)}
           style={[styles.continueWrap, { paddingBottom: insets.bottom + 16 }]}>
-          <TouchableOpacity activeOpacity={0.85} onPress={() => setShowPricing(true)}>
+          <TouchableOpacity activeOpacity={0.85} onPress={() => { track('paywall_continue_pressed'); setShowPricing(true); }}>
             <ShimmerButton text="Continue" />
           </TouchableOpacity>
         </Animated.View>
@@ -280,7 +283,7 @@ export default function PaywallScreen() {
                 return (
                   <TouchableOpacity
                     key={plan.id}
-                    onPress={() => setSelected(plan.id)}
+                    onPress={() => { track('paywall_plan_selected', { plan: plan.id }); setSelected(plan.id); }}
                     activeOpacity={0.7}
                     style={[
                       styles.planCard,
@@ -371,6 +374,16 @@ export default function PaywallScreen() {
             <TouchableOpacity style={styles.restoreButton} activeOpacity={0.6} onPress={handleRestore} disabled={isPurchasing}>
               <Text style={styles.restoreText}>Restore purchases</Text>
             </TouchableOpacity>
+
+            <View style={styles.legalRow}>
+              <TouchableOpacity activeOpacity={0.6} onPress={() => Linking.openURL('https://www.finitetime.app/#terms')}>
+                <Text style={styles.legalText}>Terms of Use</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}>·</Text>
+              <TouchableOpacity activeOpacity={0.6} onPress={() => Linking.openURL('https://www.finitetime.app/#privacy')}>
+                <Text style={styles.legalText}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
           </Animated.View>
         </>
       )}
@@ -750,5 +763,23 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'rgba(255,255,255,0.35)',
     textDecorationLine: 'underline',
+  },
+  legalRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  legalText: {
+    fontFamily: AppFonts.mono,
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.25)',
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: {
+    fontFamily: AppFonts.mono,
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.25)',
+    marginHorizontal: 8,
   },
 });

@@ -22,6 +22,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
+  const lifeExpRef = useRef(settings.lifeExpectancy);
   const shouldAnimate = useRef(!hasAnimated);
   hasAnimated = true;
 
@@ -34,7 +35,7 @@ export default function SettingsScreen() {
     const body = encodeURIComponent(
       `Hi Finite team,\n\n[Describe your feedback, feature request, or bug report here]\n\n---\nApp: Finite v${Constants.expoConfig?.version ?? '1.0.0'}\nPlatform: ${Platform.OS}`
     );
-    Linking.openURL(`mailto:contact@finite.app?subject=${subject}&body=${body}`);
+    Linking.openURL(`mailto:contact@finitetime.app?subject=${subject}&body=${body}`);
   };
 
   const sleepHours =
@@ -119,6 +120,12 @@ export default function SettingsScreen() {
             min={50}
             max={120}
             onChange={(v) => updateSetting('lifeExpectancy', v)}
+            onComplete={(v) => {
+              if (v !== lifeExpRef.current) {
+                track('life_expectancy_changed', { value: v, previous_value: lifeExpRef.current });
+                lifeExpRef.current = v;
+              }
+            }}
             format={(v) => `${v} years`}
             icon="🎯"
             color="#34D399"

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Platform } from 'react-native';
 import Purchases, { type PurchasesStoreProduct } from 'react-native-purchases';
 import * as Amplitude from '@amplitude/analytics-react-native';
+import { track, setUserProperties } from '@/utils/analytics';
 
 export type PlanId = 'monthly' | 'yearly' | 'lifetime';
 
@@ -93,9 +94,17 @@ export function PurchaseProvider({ children }: { children: React.ReactNode }) {
       const { customerInfo } = await Purchases.purchaseStoreProduct(product);
       const isPremium = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
       setIsProUser(isPremium);
+      if (isPremium) {
+        track('purchase_completed', { plan: planId });
+        setUserProperties({ is_pro_user: true });
+      }
       return isPremium;
     } catch (e: any) {
-      if (e.userCancelled) return false;
+      if (e.userCancelled) {
+        track('purchase_cancelled', { plan: planId });
+        return false;
+      }
+      track('purchase_failed', { plan: planId, error: e.message });
       throw e;
     } finally {
       setIsPurchasing(false);
@@ -108,8 +117,13 @@ export function PurchaseProvider({ children }: { children: React.ReactNode }) {
       const customerInfo = await Purchases.restorePurchases();
       const isPremium = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
       setIsProUser(isPremium);
+      if (isPremium) {
+        track('restore_completed');
+        setUserProperties({ is_pro_user: true });
+      }
       return isPremium;
     } catch {
+      track('restore_failed');
       return false;
     } finally {
       setIsPurchasing(false);

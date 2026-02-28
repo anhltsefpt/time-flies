@@ -4,6 +4,7 @@ import { EventModal } from "@/components/EventModal";
 import { AppColors, AppFonts } from "@/constants/theme";
 import { useEvents } from "@/contexts/EventContext";
 import type { FiniteEvent } from "@/types";
+import { track } from "@/utils/analytics";
 import { splitEvents } from "@/utils/events";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -35,12 +36,14 @@ export default function EventsScreen() {
     }
   }, [toast]);
 
-  const openNew = useCallback(() => {
+  const openNew = useCallback((source: 'header' | 'empty_state') => {
+    track('event_add_pressed', { source });
     setEditingEvent(null);
     setModalVisible(true);
   }, []);
 
-  const openEdit = useCallback((event: FiniteEvent) => {
+  const openEdit = useCallback((event: FiniteEvent, isPast: boolean) => {
+    track('event_card_pressed', { id: event.id, is_past: isPast });
     setEditingEvent(event);
     setModalVisible(true);
   }, []);
@@ -51,6 +54,7 @@ export default function EventsScreen() {
         updateEvent(evt as FiniteEvent);
         setToast("Updated");
       } else {
+        track('event_creation_completed', { color: evt.color });
         addEvent(evt);
         setToast("Added");
       }
@@ -70,6 +74,7 @@ export default function EventsScreen() {
 
   const handleSwipeDelete = useCallback(
     (id: number) => {
+      track('event_swiped_delete', { id });
       deleteEvent(id);
       setToast("Deleted");
     },
@@ -80,7 +85,7 @@ export default function EventsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={openNew} style={styles.addButton}>
+        <Pressable onPress={() => openNew('header')} style={styles.addButton}>
           <LinearGradient
             colors={[AppColors.orange, AppColors.orangeLight]}
             start={{ x: 0, y: 0 }}
@@ -98,7 +103,7 @@ export default function EventsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {events.length === 0 ? (
-          <EventEmptyState onAdd={openNew} />
+          <EventEmptyState onAdd={() => openNew('empty_state')} />
         ) : (
           <>
             {/* Upcoming */}
@@ -114,7 +119,7 @@ export default function EventsScreen() {
                       key={e.id}
                       event={e}
                       index={i}
-                      onPress={() => openEdit(e)}
+                      onPress={() => openEdit(e, false)}
                       onDelete={handleSwipeDelete}
                     />
                   ))}
@@ -137,7 +142,11 @@ export default function EventsScreen() {
 
                 {/* Collapsible header */}
                 <Pressable
-                  onPress={() => setPastCollapsed((prev) => !prev)}
+                  onPress={() => {
+                    const next = !pastCollapsed;
+                    track('past_events_toggled', { collapsed: next, past_count: past.length });
+                    setPastCollapsed(next);
+                  }}
                   style={styles.pastHeader}
                 >
                   <Text style={styles.sectionLabel}>PAST ({past.length})</Text>
@@ -154,7 +163,7 @@ export default function EventsScreen() {
                         key={e.id}
                         event={e}
                         index={i}
-                        onPress={() => openEdit(e)}
+                        onPress={() => openEdit(e, true)}
                       />
                     ))}
                   </View>

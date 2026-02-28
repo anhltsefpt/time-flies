@@ -10,12 +10,13 @@ interface SettingSliderProps {
   max: number;
   step?: number;
   onChange: (value: number) => void;
+  onComplete?: (value: number) => void;
   format?: (value: number) => string;
   icon: string;
   color?: string;
 }
 
-export function SettingSlider({ label, value, min, max, step = 1, onChange, format, icon, color = AppColors.orange }: SettingSliderProps) {
+export function SettingSlider({ label, value, min, max, step = 1, onChange, onComplete, format, icon, color = AppColors.orange }: SettingSliderProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -34,6 +35,7 @@ export function SettingSlider({ label, value, min, max, step = 1, onChange, form
         step={step}
         value={value}
         onValueChange={onChange}
+        onSlidingComplete={onComplete}
         minimumTrackTintColor={color}
         maximumTrackTintColor={AppColors.text08}
         thumbTintColor="#fff"
