@@ -8,6 +8,7 @@ export interface Settings {
   showLifeTab: boolean;
   showSeconds: boolean;
   language: 'vi';
+  firstOpenDate: string | null; // ISO date 'YYYY-MM-DD', set on first app open
 }
 
 export interface TimeDataEntry {

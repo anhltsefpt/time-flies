@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showLifeTab: true,
   showSeconds: true,
   language: 'vi',
+  firstOpenDate: null,
 };
 
 export function isSleepHour(h: number, sleepStart: number, sleepEnd: number): boolean {

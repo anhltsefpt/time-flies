@@ -25,12 +25,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          setSettings({ ...DEFAULT_SETTINGS, ...parsed });
-        } catch {}
+      const merged = stored ? (() => { try { return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }; } catch { return DEFAULT_SETTINGS; } })() : DEFAULT_SETTINGS;
+      if (!merged.firstOpenDate) {
+        merged.firstOpenDate = new Date().toISOString().split('T')[0];
       }
+      setSettings(merged);
       setIsLoaded(true);
     }).catch(() => {
       setIsLoaded(true);
@@ -54,6 +53,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         show_life_tab: settings.showLifeTab,
         show_seconds: settings.showSeconds,
         has_name: !!settings.name,
+        first_open_date: settings.firstOpenDate,
       });
     }
   }, [isLoaded]);
