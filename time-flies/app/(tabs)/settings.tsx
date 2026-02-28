@@ -8,6 +8,7 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
 import { AppColors, AppFonts } from '@/constants/theme';
+import { usePurchases } from '@/contexts/PurchaseContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { track } from '@/utils/analytics';
 import { SettingSlider } from '@/components/SettingSlider';
@@ -17,6 +18,7 @@ let hasAnimated = false;
 
 export default function SettingsScreen() {
   const { settings, updateSetting } = useSettings();
+  const { isProUser } = usePurchases();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -56,20 +58,34 @@ export default function SettingsScreen() {
 
         {/* Premium Card */}
         <Animated.View entering={entering(FadeInUp.duration(500))}>
-          <TouchableOpacity onPress={() => router.push('/paywall')} activeOpacity={0.8}>
+          {isProUser ? (
             <LinearGradient
-              colors={['rgba(249,115,22,0.12)', 'rgba(249,115,22,0.04)']}
+              colors={['rgba(34,197,94,0.12)', 'rgba(34,197,94,0.04)']}
               style={styles.premiumCard}>
               <View style={styles.premiumContent}>
-                <Text style={styles.premiumIcon}>{'\u2B50'}</Text>
+                <Text style={styles.premiumIcon}>{'\u2705'}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.premiumTitle}>Finite Premium</Text>
-                  <Text style={styles.premiumDesc}>Unlock all features</Text>
+                  <Text style={[styles.premiumDesc, { color: '#22C55E' }]}>Unlocked</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={AppColors.orange} />
               </View>
             </LinearGradient>
-          </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => router.push('/paywall')} activeOpacity={0.8}>
+              <LinearGradient
+                colors={['rgba(249,115,22,0.12)', 'rgba(249,115,22,0.04)']}
+                style={styles.premiumCard}>
+                <View style={styles.premiumContent}>
+                  <Text style={styles.premiumIcon}>{'\u2B50'}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.premiumTitle}>Finite Premium</Text>
+                    <Text style={styles.premiumDesc}>Unlock all features</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color={AppColors.orange} />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
         </Animated.View>
 
         {/* Profile Section */}

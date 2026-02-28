@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,62 +19,7 @@ import Animated, {
 
 import { AppColors, AppFonts } from '@/constants/theme';
 import { useSettings } from '@/contexts/SettingsContext';
-
-type PlanId = 'yearly' | 'monthly' | 'lifetime';
-
-const plans: {
-  id: PlanId;
-  label: string;
-  price: string;
-  unit: string;
-  perMonth: string | null;
-  trial: string | null;
-  badge: string | null;
-  save: string | null;
-}[] = [
-  {
-    id: 'yearly',
-    label: 'Yearly',
-    price: '$7.99',
-    unit: '/year',
-    perMonth: '$0.67/mo',
-    trial: '7 days free',
-    badge: 'MOST POPULAR',
-    save: 'Save 67%',
-  },
-  {
-    id: 'monthly',
-    label: 'Monthly',
-    price: '$1.99',
-    unit: '/mo',
-    perMonth: null,
-    trial: '3 days free',
-    badge: null,
-    save: null,
-  },
-  {
-    id: 'lifetime',
-    label: 'Lifetime',
-    price: '$9.99',
-    unit: '',
-    perMonth: 'Pay once, keep forever',
-    trial: null,
-    badge: null,
-    save: null,
-  },
-];
-
-const ctaText: Record<PlanId, string> = {
-  yearly: 'Start 7-Day Free Trial',
-  monthly: 'Start 3-Day Free Trial',
-  lifetime: 'Get Lifetime Access — $9.99',
-};
-
-const subText: Record<PlanId, string> = {
-  yearly: 'Then $7.99/year. Cancel anytime.',
-  monthly: 'Then $1.99/month. Cancel anytime.',
-  lifetime: 'One-time payment. No subscription.',
-};
+import { usePurchases, type PlanId } from '@/contexts/PurchaseContext';
 
 const features = [
   {
@@ -141,8 +86,83 @@ export default function PaywallScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { settings } = useSettings();
+  const { isProUser, products, isLoading, isPurchasing, purchase, restorePurchases } = usePurchases();
   const [showPricing, setShowPricing] = useState(false);
   const [selected, setSelected] = useState<PlanId>('yearly');
+
+  // Auto-dismiss if already premium
+  useEffect(() => {
+    if (isProUser) {
+      router.back();
+    }
+  }, [isProUser]);
+
+  const plans = useMemo(() => [
+    {
+      id: 'yearly' as PlanId,
+      label: 'Yearly',
+      price: products.yearly?.priceString ?? '$7.99',
+      unit: '/year',
+      perMonth: products.yearly
+        ? `${(products.yearly.price / 12).toLocaleString('en-US', { style: 'currency', currency: products.yearly.currencyCode })}\/mo`
+        : '$0.67/mo',
+      trial: '7 days free',
+      badge: 'MOST POPULAR',
+      save: 'Save 67%',
+    },
+    {
+      id: 'monthly' as PlanId,
+      label: 'Monthly',
+      price: products.monthly?.priceString ?? '$1.99',
+      unit: '/mo',
+      perMonth: null,
+      trial: '3 days free',
+      badge: null,
+      save: null,
+    },
+    {
+      id: 'lifetime' as PlanId,
+      label: 'Lifetime',
+      price: products.lifetime?.priceString ?? '$9.99',
+      unit: '',
+      perMonth: 'Pay once, keep forever',
+      trial: null,
+      badge: null,
+      save: null,
+    },
+  ], [products]);
+
+  const ctaText = useMemo((): Record<PlanId, string> => ({
+    yearly: 'Start 7-Day Free Trial',
+    monthly: 'Start 3-Day Free Trial',
+    lifetime: `Get Lifetime Access \u2014 ${products.lifetime?.priceString ?? '$9.99'}`,
+  }), [products]);
+
+  const subText = useMemo((): Record<PlanId, string> => ({
+    yearly: `Then ${products.yearly?.priceString ?? '$7.99'}/year. Cancel anytime.`,
+    monthly: `Then ${products.monthly?.priceString ?? '$1.99'}/month. Cancel anytime.`,
+    lifetime: 'One-time payment. No subscription.',
+  }), [products]);
+
+  const handlePurchase = async () => {
+    try {
+      const success = await purchase(selected);
+      if (success) router.back();
+    } catch {
+      Alert.alert('Purchase Failed', 'Something went wrong. Please try again.');
+    }
+  };
+
+  const handleRestore = async () => {
+    const success = await restorePurchases();
+    if (success) {
+      Alert.alert('Restored!', 'Your premium access has been restored.', [
+        { text: 'OK', onPress: () => router.back() },
+      ]);
+    } else {
+      Alert.alert('Nothing to Restore', 'No previous purchases were found.');
+    }
+  };
 
   const daysLeft = useMemo(() => {
     const endDate = new Date(settings.birthYear + settings.lifeExpectancy, 0, 1);
@@ -249,7 +269,11 @@ export default function PaywallScreen() {
 
             {/* Plan cards */}
             <View style={styles.plansSection}>
-              {plans.map((plan) => {
+              {isLoading ? (
+                <View style={styles.loadingPlans}>
+                  <ActivityIndicator color={AppColors.orange} size="large" />
+                </View>
+              ) : plans.map((plan) => {
                 const isSelected = selected === plan.id;
                 const isYearly = plan.id === 'yearly';
 
@@ -328,13 +352,23 @@ export default function PaywallScreen() {
             </View>
 
             {/* CTA */}
-            <TouchableOpacity activeOpacity={0.85} onPress={() => {}}>
-              <ShimmerButton text={ctaText[selected]} style={styles.sheetCta} />
+            <TouchableOpacity activeOpacity={0.85} onPress={handlePurchase} disabled={isPurchasing}>
+              {isPurchasing ? (
+                <LinearGradient
+                  colors={['#F97316', '#EA580C']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.ctaButton, styles.sheetCta]}>
+                  <ActivityIndicator color="#fff" />
+                </LinearGradient>
+              ) : (
+                <ShimmerButton text={ctaText[selected]} style={styles.sheetCta} />
+              )}
             </TouchableOpacity>
 
             <Text style={styles.subText}>{subText[selected]}</Text>
 
-            <TouchableOpacity style={styles.restoreButton} activeOpacity={0.6}>
+            <TouchableOpacity style={styles.restoreButton} activeOpacity={0.6} onPress={handleRestore} disabled={isPurchasing}>
               <Text style={styles.restoreText}>Restore purchases</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -534,6 +568,11 @@ const styles = StyleSheet.create({
   plansSection: {
     gap: 10,
     marginBottom: 20,
+  },
+  loadingPlans: {
+    paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   planCard: {
     flexDirection: 'row',
