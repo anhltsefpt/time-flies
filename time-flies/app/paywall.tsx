@@ -237,7 +237,7 @@ export default function PaywallScreen() {
 
           {/* Bottom Sheet */}
           <Animated.View
-            entering={SlideInDown.duration(400).springify().damping(20)}
+            entering={SlideInDown.duration(350)}
             exiting={SlideOutDown.duration(300)}
             style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
             {/* Handle bar */}
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.5)',
   },
   step1Content: {
     flex: 1,
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   youHaveLabel: {
     fontFamily: AppFonts.mono,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.45)',
     letterSpacing: 3,
     marginBottom: 8,
   },
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   daysLabel: {
     fontFamily: AppFonts.mono,
     fontSize: 14,
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.45)',
     marginTop: 6,
     letterSpacing: 1,
   },
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   goneText: {
     fontFamily: AppFonts.mono,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.25)',
+    color: 'rgba(255,255,255,0.4)',
     marginTop: 8,
   },
 
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
   quoteLine1: {
     fontFamily: AppFonts.outfitMedium,
     fontSize: 18,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(255,255,255,0.55)',
     lineHeight: 28,
     textAlign: 'center',
     marginTop: 20,
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   featureDesc: {
     fontFamily: AppFonts.outfit,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.45)',
     marginTop: 3,
     lineHeight: 15,
   },
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
   sheetSubtitle: {
     fontFamily: AppFonts.mono,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.45)',
     textAlign: 'center',
     marginTop: 6,
     marginBottom: 20,
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
   planLabel: {
     fontFamily: AppFonts.outfitSemiBold,
     fontSize: 16,
-    color: 'rgba(255,255,255,0.45)',
+    color: 'rgba(255,255,255,0.55)',
   },
   planLabelActive: {
     color: '#fff',
@@ -625,10 +625,10 @@ const styles = StyleSheet.create({
   planPerMonth: {
     fontFamily: AppFonts.mono,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.15)',
+    color: 'rgba(255,255,255,0.35)',
   },
   planPerMonthActive: {
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.5)',
   },
   trialBadge: {
     backgroundColor: 'rgba(249,115,22,0.08)',
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
   planPrice: {
     fontFamily: AppFonts.outfitBold,
     fontSize: 20,
-    color: 'rgba(255,255,255,0.35)',
+    color: 'rgba(255,255,255,0.5)',
   },
   planPriceActive: {
     color: '#fff',
@@ -658,10 +658,10 @@ const styles = StyleSheet.create({
   planUnit: {
     fontFamily: AppFonts.mono,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.12)',
+    color: 'rgba(255,255,255,0.35)',
   },
   planUnitActive: {
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.5)',
   },
 
   // CTA
@@ -699,7 +699,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontFamily: AppFonts.mono,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.15)',
+    color: 'rgba(255,255,255,0.35)',
     lineHeight: 16,
   },
   restoreButton: {
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   restoreText: {
     fontFamily: AppFonts.mono,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.15)',
+    color: 'rgba(255,255,255,0.35)',
     textDecorationLine: 'underline',
   },
 });
