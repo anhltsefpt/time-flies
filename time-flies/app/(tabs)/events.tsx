@@ -6,7 +6,7 @@ import { useEvents } from "@/contexts/EventContext";
 import type { FiniteEvent } from "@/types";
 import { track } from "@/utils/analytics";
 import { splitEvents } from "@/utils/events";
-import { LinearGradient } from "expo-linear-gradient";
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
@@ -86,14 +86,7 @@ export default function EventsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => openNew('header')} style={styles.addButton}>
-          <LinearGradient
-            colors={[AppColors.orange, AppColors.orangeLight]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.addGradient}
-          >
-            <Text style={styles.addText}>+ Add</Text>
-          </LinearGradient>
+          <Text style={styles.addText}>+ Add</Text>
         </Pressable>
       </View>
 
@@ -209,10 +202,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   addButton: {
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  addGradient: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 10,
@@ -220,7 +209,7 @@ const styles = StyleSheet.create({
   addText: {
     fontFamily: AppFonts.outfitSemiBold,
     fontSize: 14,
-    color: "#fff",
+    color: AppColors.orange,
   },
   scroll: {
     flex: 1,

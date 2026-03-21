@@ -1,9 +1,10 @@
 import { AppColors, AppFonts } from "@/constants/theme";
 import type { FiniteEvent } from "@/types";
-import { EVENT_COLORS, getDaysLeft, hexToRgba } from "@/utils/events";
+import { useEvents } from "@/contexts/EventContext";
+import { EVENT_COLORS, getDaysLeft, getNextColor, hexToRgba } from "@/utils/events";
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -31,10 +32,11 @@ export function EventModal({
   onDelete,
   onClose,
 }: EventModalProps) {
+  const { events } = useEvents();
   const isNew = !event;
   const [name, setName] = useState(event?.name || "");
   const [due, setDue] = useState(event?.due || getDefaultDue());
-  const [color, setColor] = useState(event?.color || EVENT_COLORS[0]);
+  const [color, setColor] = useState(event?.color || getNextColor(events));
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   // Reset state when modal opens with new data
@@ -42,13 +44,62 @@ export function EventModal({
     if (visible) {
       setName(event?.name || "");
       setDue(event?.due || getDefaultDue());
-      setColor(event?.color || EVENT_COLORS[0]);
+      setColor(event?.color || getNextColor(events));
       setDeleteConfirm(false);
     }
   }, [visible, event]);
 
   const daysLeft = getDaysLeft(due);
   const canSave = name.trim().length > 0;
+
+  const activeDateRanges = useMemo(() => [{ startId: due, endId: due }], [due]);
+
+  const calendarTheme = useMemo(() => ({
+    rowMonth: {
+      content: {
+        textAlign: "center" as const,
+        color: "rgba(255,255,255,0.9)",
+        fontFamily: AppFonts.outfitSemiBold,
+        fontSize: 14,
+      },
+    },
+    itemWeekName: {
+      content: {
+        color: "rgba(255,255,255,0.4)",
+        fontFamily: AppFonts.mono,
+      },
+    },
+    itemDay: {
+      idle: () => ({
+        container: {},
+        content: {
+          color: "rgba(255,255,255,0.8)",
+          fontFamily: AppFonts.outfit,
+        },
+      }),
+      today: () => ({
+        container: {
+          borderColor: "rgba(255,255,255,0.3)",
+          borderWidth: 1,
+          borderRadius: 12,
+        },
+        content: {
+          color: "#fff",
+          fontFamily: AppFonts.outfitSemiBold,
+        },
+      }),
+      active: () => ({
+        container: {
+          backgroundColor: color,
+          borderRadius: 12,
+        },
+        content: {
+          color: "#fff",
+          fontFamily: AppFonts.outfitSemiBold,
+        },
+      }),
+    },
+  }), [color]);
 
   function handleSave() {
     if (!canSave) return;
@@ -80,7 +131,7 @@ export function EventModal({
         >
           <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
             <View style={styles.handle} />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               {/* Header */}
               {isNew && (
                 <View style={styles.header}>
@@ -106,58 +157,13 @@ export function EventModal({
                 <View style={styles.calendarContainer}>
                   <Calendar.List
                     calendarInitialMonthId={due}
-                    calendarActiveDateRanges={[{ startId: due, endId: due }]}
+                    calendarActiveDateRanges={activeDateRanges}
                     calendarColorScheme="dark"
                     onCalendarDayPress={(dateId) => setDue(dateId)}
                     calendarMinDateId={toDateId(new Date())}
                     calendarPastScrollRangeInMonths={0}
                     calendarFutureScrollRangeInMonths={24}
-                    theme={{
-                      rowMonth: {
-                        content: {
-                          textAlign: "center",
-                          color: "rgba(255,255,255,0.9)",
-                          fontFamily: AppFonts.outfitSemiBold,
-                          fontSize: 14,
-                        },
-                      },
-                      itemWeekName: {
-                        content: {
-                          color: "rgba(255,255,255,0.4)",
-                          fontFamily: AppFonts.mono,
-                        },
-                      },
-                      itemDay: {
-                        idle: () => ({
-                          container: {},
-                          content: {
-                            color: "rgba(255,255,255,0.8)",
-                            fontFamily: AppFonts.outfit,
-                          },
-                        }),
-                        today: () => ({
-                          container: {
-                            borderColor: "rgba(255,255,255,0.3)",
-                            borderWidth: 1,
-                            borderRadius: 12,
-                          },
-                          content: {
-                            color: "#fff",
-                            fontFamily: AppFonts.outfitSemiBold,
-                          },
-                        }),
-                        active: () => ({
-                          container: {
-                            backgroundColor: color,
-                            borderRadius: 12,
-                          },
-                          content: {
-                            color: "#fff",
-                            fontFamily: AppFonts.outfitSemiBold,
-                          },
-                        }),
-                      },
-                    }}
+                    theme={calendarTheme}
                   />
                 </View>
               </View>
@@ -300,6 +306,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   keyboardView: {
+    flex: 1,
     justifyContent: "flex-end",
   },
   sheet: {
@@ -309,6 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 32,
     paddingTop: 12,
+    maxHeight: "90%",
   },
   handle: {
     width: 36,

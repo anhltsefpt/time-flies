@@ -3,604 +3,2352 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finite — Your time is counting</title>
-  <meta name="description" content="Finite shows you how much time you actually have — today, this year, and in your entire life. Free on the App Store.">
-  <meta property="og:title" content="Finite — Your time is counting">
-  <meta property="og:description" content="Not another clock app. Finite shows you how much time you actually have — so you spend it on what matters.">
+  <title>Finite -- See How Much Time You Actually Have Left | iOS</title>
+  <meta name="description" content="Finite visualizes your remaining time -- today, this year, and your entire life. Make every day count. Free on the App Store. Premium plans from $1.99/mo.">
+  <meta name="keywords" content="time awareness app, life countdown app, day countdown timer iOS, time left in life calculator, memento mori app, productivity timer app, life expectancy visualizer, time tracking iOS app, stoic philosophy app, how much time do I have left">
+  <meta property="og:title" content="Finite -- See How Much Time You Actually Have Left | iOS">
+  <meta property="og:description" content="Not another clock app. Finite shows you how much time you actually have -- so you spend it on what matters.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://finitetime.app">
+  <meta property="og:image" content="https://finitetime.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Finite -- See how much time you actually have left">
+  <meta property="og:site_name" content="Finite">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Finite -- See How Much Time You Actually Have Left">
+  <meta name="twitter:description" content="Not another clock app. Finite shows you how much time you actually have -- so you spend it on what matters.">
+  <meta name="twitter:image" content="https://finitetime.app/og-image.png">
+  <meta name="twitter:image:alt" content="Finite -- See how much time you actually have left">
+  <meta name="theme-color" content="#0A0A0F">
+  <link rel="canonical" href="https://finitetime.app">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0A0A0F;
-      --surface: rgba(255,255,255,0.03);
-      --border: rgba(255,255,255,0.06);
-      --text: #fff;
-      --muted: rgba(255,255,255,0.5);
-      --dim: rgba(255,255,255,0.2);
-      --orange: #F97316;
-      --orange-dark: #EA580C;
-      --red: #EF4444;
-      --green: #22C55E;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Outfit', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    ::selection { background: rgba(249,115,22,0.3); }
 
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 14px 24px;
-      background: rgba(10,10,15,0.85);
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Finite",
+    "operatingSystem": "iOS",
+    "applicationCategory": "LifestyleApplication",
+    "offers": [
+      {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free tier with day countdown, week/month/year progress, year heatmap, and 3 event countdowns"
+      },
+      {
+        "@type": "Offer",
+        "price": "1.99",
+        "priceCurrency": "USD",
+        "description": "Monthly premium with all features"
+      },
+      {
+        "@type": "Offer",
+        "price": "7.99",
+        "priceCurrency": "USD",
+        "description": "Yearly premium -- save 67%"
+      },
+      {
+        "@type": "Offer",
+        "price": "9.99",
+        "priceCurrency": "USD",
+        "description": "Lifetime one-time purchase"
+      }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "150",
+      "bestRating": "5"
+    },
+    "description": "Finite visualizes your remaining time -- today, this year, and your entire life. Make every day count.",
+    "url": "https://finitetime.app",
+    "downloadUrl": "https://apps.apple.com/us/app/finite-life-perspective/id6759458886",
+    "screenshot": "https://finitetime.app/screen-today.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Finite",
+    "url": "https://finitetime.app",
+    "logo": "https://finitetime.app/og-image.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "contact@finitetime.app",
+      "contactType": "customer support"
+    }
+  }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CUSTOM PROPERTIES ===== */
+    :root {
+      --color-bg: #0A0A0F;
+      --color-bg-elevated: #0E0E14;
+      --color-bg-hover: #121218;
+      --color-surface: rgba(255, 255, 255, 0.03);
+      --color-surface-hover: rgba(255, 255, 255, 0.05);
+      --color-border: rgba(255, 255, 255, 0.06);
+      --color-border-hover: rgba(255, 255, 255, 0.10);
+      --color-border-active: rgba(249, 115, 22, 0.40);
+
+      --color-text-100: #FFFFFF;
+      --color-text-90: rgba(255, 255, 255, 0.90);
+      --color-text-80: rgba(255, 255, 255, 0.80);
+      --color-text-72: rgba(255, 255, 255, 0.72);
+      --color-text-65: rgba(255, 255, 255, 0.65);
+      --color-text-58: rgba(255, 255, 255, 0.58);
+      --color-text-50: rgba(255, 255, 255, 0.50);
+      --color-text-20: rgba(255, 255, 255, 0.20);
+      --color-text-10: rgba(255, 255, 255, 0.10);
+      --color-text-08: rgba(255, 255, 255, 0.08);
+
+      --color-orange: #F97316;
+      --color-orange-dark: #EA580C;
+      --color-orange-glow: rgba(249, 115, 22, 0.15);
+      --color-orange-border: rgba(249, 115, 22, 0.20);
+      --color-orange-surface: rgba(249, 115, 22, 0.05);
+      --color-orange-surface-hover: rgba(249, 115, 22, 0.08);
+
+      --color-green: #22C55E;
+      --color-red: #EF4444;
+
+      --color-selection: rgba(249, 115, 22, 0.30);
+
+      --font-primary: 'Outfit', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+
+      --text-hero-number: clamp(64px, 12vw, 110px);
+      --text-display: clamp(36px, 6vw, 60px);
+      --text-h2: clamp(26px, 4.5vw, 38px);
+      --text-body-lg: 17px;
+      --text-body: 16px;
+      --text-body-sm: 14px;
+      --text-caption: 13px;
+      --text-mono-lg: 15px;
+      --text-mono: 12px;
+      --text-mono-sm: 11px;
+      --text-mono-xs: 10px;
+      --text-mono-xxs: 9px;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-xl: 16px;
+      --radius-2xl: 20px;
+      --radius-3xl: 24px;
+      --radius-full: 9999px;
+
+      --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.40);
+      --shadow-button: 0 0 30px rgba(249, 115, 22, 0.15);
+      --shadow-button-hover: 0 0 50px rgba(249, 115, 22, 0.25);
+
+      --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: 150ms var(--ease-out);
+      --transition-normal: 200ms var(--ease-out);
+      --transition-slow: 300ms var(--ease-out);
+      --transition-reveal: 600ms var(--ease-out);
+
+      --container-max: 960px;
+      --container-legal: 760px;
+      --container-padding: 24px;
+      --nav-height: 52px;
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 70px;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text-100);
+      font-family: var(--font-primary);
+      font-size: var(--text-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+      background: var(--color-selection);
+      color: var(--color-text-100);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===== ACCESSIBILITY ===== */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      padding: 8px 16px;
+      background: var(--color-orange);
+      color: #fff;
+      font-size: var(--text-body-sm);
+      font-weight: 600;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      z-index: 200;
+      transition: top 200ms;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-orange);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    /* ===== KEYFRAMES ===== */
+    @keyframes barFill {
+      from { width: 0%; }
+      to { width: 40.5%; }
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes particleDrift {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.15); }
+      50% { box-shadow: 0 0 45px rgba(249, 115, 22, 0.22); }
+    }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity var(--transition-reveal), transform var(--transition-reveal);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 80ms; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 160ms; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 240ms; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 320ms; }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 400ms; }
+
+    .reveal-stagger.visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 14px var(--container-padding);
+      background: rgba(10, 10, 15, 0);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 300ms, border-color 300ms;
     }
-    .nav-logo {
-      font-size: 20px; font-weight: 800; color: var(--orange);
-      text-decoration: none; letter-spacing: -0.5px;
-    }
-    .nav-links { display: flex; gap: 24px; align-items: center; }
-    .nav-links a {
-      font-size: 14px; color: var(--muted);
-      text-decoration: none; transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta {
-      padding: 8px 20px; border-radius: 8px; border: none;
-      background: var(--orange); color: #fff;
-      font-family: 'Outfit', sans-serif; font-size: 14px;
-      font-weight: 600; cursor: pointer; text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    .nav-cta:hover { opacity: 0.9; }
 
-    /* HERO */
-    .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; text-align: center;
-      padding: 120px 24px 80px; position: relative;
+    .nav.scrolled {
+      background: rgba(10, 10, 15, 0.85);
+      border-bottom-color: var(--color-border);
     }
-    .hero-glow {
-      position: absolute; top: -250px; left: 50%; transform: translateX(-50%);
-      width: 900px; height: 900px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 50%);
-      pointer-events: none;
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-orange);
+      text-decoration: none;
+      letter-spacing: -0.5px;
     }
-    .hero-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      color: var(--orange); letter-spacing: 3px; text-transform: uppercase;
-      margin-bottom: 24px; padding: 6px 16px; border-radius: 20px;
-      border: 1px solid rgba(249,115,22,0.2);
-      background: rgba(249,115,22,0.05);
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: var(--text-body-sm);
+      color: var(--color-text-50);
+      text-decoration: none;
+      transition: color var(--transition-normal);
+      padding: 12px 0;
       position: relative;
     }
+
+    .nav-links a:not(.nav-cta)::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--color-text-50);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 250ms var(--ease-out);
+    }
+
+    .nav-links a:not(.nav-cta):hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-text-100);
+    }
+
+    .nav-cta {
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--color-orange);
+      color: #fff;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-sm);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity var(--transition-normal), transform var(--transition-fast);
+    }
+
+    .nav-cta:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .nav-cta:active {
+      transform: translateY(0);
+      opacity: 0.85;
+    }
+
+    .nav-cta:focus-visible,
+    .hero-cta:focus-visible {
+      outline-offset: 4px;
+    }
+
+    .nav-links a:focus-visible {
+      outline-offset: 6px;
+    }
+
+    /* Hamburger menu */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      position: relative;
+      z-index: 110;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--color-text-100);
+      border-radius: 1px;
+      transition: transform 300ms var(--ease-out), opacity 200ms;
+    }
+
+    .nav-hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 15, 0.97);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 300ms var(--ease-out);
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-menu a {
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--color-text-72);
+      transition: color var(--transition-normal);
+    }
+
+    .mobile-menu a:hover {
+      color: var(--color-text-100);
+    }
+
+    .mobile-menu .mobile-menu-cta {
+      padding: 16px 40px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-dark));
+      color: #fff;
+      font-size: var(--text-body-lg);
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px var(--container-padding) 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -250px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      animation: particleDrift linear infinite;
+      bottom: 0;
+    }
+
+    .hero-particle:nth-child(1) { left: 5%; width: 1px; height: 1px; animation-duration: 80s; animation-delay: -10s; }
+    .hero-particle:nth-child(2) { left: 12%; width: 2px; height: 2px; animation-duration: 95s; animation-delay: -25s; }
+    .hero-particle:nth-child(3) { left: 18%; width: 1px; height: 1px; animation-duration: 70s; animation-delay: -40s; }
+    .hero-particle:nth-child(4) { left: 25%; width: 1px; height: 1px; animation-duration: 110s; animation-delay: -5s; background: rgba(255,255,255,0.04); }
+    .hero-particle:nth-child(5) { left: 30%; width: 2px; height: 2px; animation-duration: 85s; animation-delay: -60s; }
+    .hero-particle:nth-child(6) { left: 35%; width: 1px; height: 1px; animation-duration: 100s; animation-delay: -15s; background: rgba(255,255,255,0.03); }
+    .hero-particle:nth-child(7) { left: 40%; width: 2px; height: 2px; animation-duration: 75s; animation-delay: -35s; }
+    .hero-particle:nth-child(8) { left: 45%; width: 1px; height: 1px; animation-duration: 90s; animation-delay: -50s; background: rgba(255,255,255,0.08); }
+    .hero-particle:nth-child(9) { left: 50%; width: 1px; height: 1px; animation-duration: 105s; animation-delay: -20s; }
+    .hero-particle:nth-child(10) { left: 55%; width: 2px; height: 2px; animation-duration: 65s; animation-delay: -45s; background: rgba(255,255,255,0.04); }
+    .hero-particle:nth-child(11) { left: 60%; width: 1px; height: 1px; animation-duration: 88s; animation-delay: -8s; }
+    .hero-particle:nth-child(12) { left: 65%; width: 2px; height: 2px; animation-duration: 78s; animation-delay: -30s; }
+    .hero-particle:nth-child(13) { left: 70%; width: 1px; height: 1px; animation-duration: 115s; animation-delay: -55s; background: rgba(255,255,255,0.05); }
+    .hero-particle:nth-child(14) { left: 75%; width: 1px; height: 1px; animation-duration: 72s; animation-delay: -12s; }
+    .hero-particle:nth-child(15) { left: 80%; width: 2px; height: 2px; animation-duration: 98s; animation-delay: -38s; }
+    .hero-particle:nth-child(16) { left: 85%; width: 1px; height: 1px; animation-duration: 82s; animation-delay: -22s; background: rgba(255,255,255,0.04); }
+    .hero-particle:nth-child(17) { left: 90%; width: 1px; height: 1px; animation-duration: 68s; animation-delay: -48s; }
+    .hero-particle:nth-child(18) { left: 95%; width: 2px; height: 2px; animation-duration: 108s; animation-delay: -3s; }
+    .hero-particle:nth-child(19) { left: 8%; width: 1px; height: 1px; animation-duration: 92s; animation-delay: -65s; background: rgba(255,255,255,0.03); }
+    .hero-particle:nth-child(20) { left: 22%; width: 2px; height: 2px; animation-duration: 76s; animation-delay: -18s; }
+    .hero-particle:nth-child(21) { left: 33%; width: 1px; height: 1px; animation-duration: 102s; animation-delay: -42s; }
+    .hero-particle:nth-child(22) { left: 48%; width: 1px; height: 1px; animation-duration: 86s; animation-delay: -28s; background: rgba(255,255,255,0.05); }
+    .hero-particle:nth-child(23) { left: 57%; width: 2px; height: 2px; animation-duration: 73s; animation-delay: -52s; }
+    .hero-particle:nth-child(24) { left: 63%; width: 1px; height: 1px; animation-duration: 96s; animation-delay: -7s; }
+    .hero-particle:nth-child(25) { left: 72%; width: 1px; height: 1px; animation-duration: 112s; animation-delay: -33s; background: rgba(255,255,255,0.04); }
+    .hero-particle:nth-child(26) { left: 78%; width: 2px; height: 2px; animation-duration: 67s; animation-delay: -58s; }
+    .hero-particle:nth-child(27) { left: 83%; width: 1px; height: 1px; animation-duration: 104s; animation-delay: -16s; }
+    .hero-particle:nth-child(28) { left: 88%; width: 1px; height: 1px; animation-duration: 79s; animation-delay: -44s; background: rgba(255,255,255,0.03); }
+    .hero-particle:nth-child(29) { left: 15%; width: 2px; height: 2px; animation-duration: 93s; animation-delay: -36s; }
+    .hero-particle:nth-child(30) { left: 42%; width: 1px; height: 1px; animation-duration: 87s; animation-delay: -9s; background: rgba(255,255,255,0.06); }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-orange);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding: 6px 16px;
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--color-orange-border);
+      background: var(--color-orange-surface);
+      position: relative;
+      z-index: 1;
+    }
+
     .hero-number {
-      font-family: 'Outfit', sans-serif; font-size: clamp(64px, 12vw, 110px);
-      font-weight: 800; color: var(--text); letter-spacing: -4px;
-      line-height: 1; position: relative;
+      font-family: var(--font-primary);
+      font-size: var(--text-hero-number);
+      font-weight: 800;
+      color: var(--color-text-100);
+      letter-spacing: -4px;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
     }
+
     .hero-number-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 15px;
-      color: var(--dim); margin: 10px 0 24px; position: relative;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-lg);
+      color: var(--color-text-20);
+      margin: 10px 0 24px;
+      position: relative;
+      z-index: 1;
     }
+
     .hero-bar {
-      width: 180px; height: 4px; border-radius: 99px;
-      background: rgba(255,255,255,0.04);
-      margin: 0 auto 10px; overflow: hidden; position: relative;
+      width: 180px;
+      height: 4px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.04);
+      margin: 0 auto 10px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
     }
+
     .hero-bar-fill {
-      width: 41.5%; height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, var(--orange), var(--red));
+      width: 0%;
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--color-orange), var(--color-red));
+      animation: barFill 1.2s var(--ease-out) 0.8s forwards;
     }
+
     .hero-bar-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: rgba(255,255,255,0.1); margin-bottom: 36px; position: relative;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-10);
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
     }
+
     .hero h1 {
-      font-size: clamp(36px, 6vw, 60px); font-weight: 800;
-      line-height: 1.1; letter-spacing: -2px; margin-bottom: 18px;
-      max-width: 650px; position: relative;
+      font-size: var(--text-display);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 18px;
+      max-width: 650px;
+      position: relative;
+      z-index: 1;
     }
-    .hero h1 .accent { color: var(--orange); }
+
+    .hero h1 .accent {
+      color: var(--color-orange);
+    }
+
     .hero-sub {
-      font-size: 17px; color: var(--muted); line-height: 1.6;
-      max-width: 460px; margin-bottom: 36px; position: relative;
+      font-size: var(--text-body-lg);
+      color: var(--color-text-50);
+      line-height: 1.6;
+      max-width: 460px;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
     }
+
     .hero-cta {
-      display: inline-flex; padding: 16px 40px; border-radius: 14px; border: none;
-      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
-      color: #fff; font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700;
-      cursor: pointer; text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 30px rgba(249,115,22,0.15); position: relative;
+      display: inline-flex;
+      padding: 16px 40px;
+      border-radius: var(--radius-lg);
+      border: none;
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-dark));
+      color: #fff;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-lg);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+      box-shadow: var(--shadow-button);
+      position: relative;
+      z-index: 1;
+      animation: pulseGlow 3s ease-in-out infinite;
     }
+
     .hero-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 50px rgba(249,115,22,0.25);
-    }
-    .hero-store {
-      margin-top: 14px; font-family: 'JetBrains Mono', monospace;
-      font-size: 12px; color: var(--dim); position: relative;
+      box-shadow: var(--shadow-button-hover);
+      animation: none;
     }
 
-    /* SECTIONS */
-    section { padding: 90px 24px; max-width: 960px; margin: 0 auto; }
+    .hero-cta:active {
+      transform: translateY(0px);
+      box-shadow: 0 0 20px rgba(249, 115, 22, 0.20);
+      transition-duration: 100ms;
+    }
+
+    .hero-store {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-text-20);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== SOCIAL PROOF BAR ===== */
+    .social-proof {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 24px var(--container-padding);
+      max-width: var(--container-max);
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .social-proof-item {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-20);
+      letter-spacing: 0.5px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .social-proof-dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--color-text-10);
+      vertical-align: middle;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 90px var(--container-padding);
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+
     .section-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      color: var(--orange); letter-spacing: 3px; text-transform: uppercase;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-orange);
+      letter-spacing: 3px;
+      text-transform: uppercase;
       margin-bottom: 12px;
     }
+
     .section-title {
-      font-size: clamp(26px, 4.5vw, 38px); font-weight: 700;
-      line-height: 1.2; margin-bottom: 14px; letter-spacing: -1px;
+      font-size: var(--text-h2);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      letter-spacing: -1px;
+      color: var(--color-text-100);
     }
+
     .section-desc {
-      font-size: 16px; color: var(--muted); line-height: 1.6;
-      max-width: 520px; margin-bottom: 48px;
+      font-size: var(--text-body);
+      color: var(--color-text-50);
+      line-height: 1.6;
+      max-width: 520px;
+      margin-bottom: 48px;
     }
 
-    /* SCREENSHOTS */
-    .screenshots-wrap { padding: 60px 0; max-width: 100%; overflow: hidden; }
-    .screenshots {
-      display: flex; gap: 20px; padding: 0 24px 20px;
-      overflow-x: auto; scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      max-width: 960px; margin: 0 auto;
-    }
-    .screenshots::-webkit-scrollbar { height: 0; }
-    .screenshot-item {
-      flex-shrink: 0; width: 200px; border-radius: 24px; overflow: hidden;
-      border: 1px solid var(--border); scroll-snap-align: start;
-      background: #111; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      transition: transform 0.3s;
-    }
-    .screenshot-item:hover { transform: translateY(-4px); }
-    .screenshot-item img { width: 100%; height: auto; display: block; }
-    .screenshot-label {
-      text-align: center; padding: 10px 0 14px;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim);
+    /* ===== PROBLEM SECTION ===== */
+    .problem {
+      padding: 90px var(--container-padding);
+      max-width: var(--container-max);
+      margin: 0 auto;
     }
 
-    /* FEATURES */
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .problem-body {
+      font-size: var(--text-body);
+      color: var(--color-text-65);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    .problem-body p {
+      margin-bottom: 16px;
+    }
+
+    .problem-body em {
+      color: var(--color-text-90);
+      font-style: italic;
+    }
+
+    .problem-body strong {
+      color: var(--color-orange);
+      font-weight: 600;
+    }
+
+    /* ===== FEATURES ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
     .feature-card {
-      padding: 26px 22px; border-radius: 16px;
-      background: var(--surface); border: 1px solid var(--border);
-      transition: border-color 0.2s;
+      padding: 26px 22px;
+      border-radius: var(--radius-xl);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      transition: border-color var(--transition-normal), background var(--transition-normal), transform var(--transition-slow);
     }
-    .feature-card:hover { border-color: rgba(249,115,22,0.15); }
-    .feature-icon { font-size: 26px; margin-bottom: 12px; display: block; }
-    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-    /* PRICING */
-    .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .feature-card:hover {
+      border-color: rgba(249, 115, 22, 0.15);
+      background: var(--color-surface-hover);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--color-orange-surface-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .feature-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--color-orange);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--color-text-100);
+    }
+
+    .feature-card p {
+      font-size: var(--text-caption);
+      color: var(--color-text-50);
+      line-height: 1.5;
+    }
+
+    .feature-hook {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-20);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ===== LIFE PERSPECTIVE ===== */
+    .life-perspective {
+      padding: 100px var(--container-padding);
+      max-width: var(--container-max);
+      margin: 0 auto;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .life-perspective .section-title {
+      max-width: 600px;
+    }
+
+    .life-body {
+      font-size: var(--text-body);
+      color: var(--color-text-65);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    .life-body p {
+      margin-bottom: 16px;
+    }
+
+    .life-closing {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text-90);
+      margin-top: 32px;
+      font-style: italic;
+    }
+
+    /* ===== SCREENSHOTS ===== */
+    .screenshots-wrap {
+      padding: 60px 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .screenshots {
+      display: flex;
+      gap: 20px;
+      padding: 0 var(--container-padding) 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+
+    .screenshots::-webkit-scrollbar {
+      height: 0;
+    }
+
+    .screenshot-item {
+      flex-shrink: 0;
+      width: 200px;
+      border-radius: var(--radius-3xl);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      scroll-snap-align: start;
+      background: #111;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+      animation: floatY 6s ease-in-out infinite;
+    }
+
+    .screenshot-item:nth-child(1) { animation-delay: 0s; }
+    .screenshot-item:nth-child(2) { animation-delay: 0.8s; }
+    .screenshot-item:nth-child(3) { animation-delay: 1.6s; }
+    .screenshot-item:nth-child(4) { animation-delay: 2.4s; }
+    .screenshot-item:nth-child(5) { animation-delay: 3.2s; }
+
+    .screenshot-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.50);
+    }
+
+    .screenshot-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .screenshot-label {
+      text-align: center;
+      padding: 10px 0 14px;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-20);
+    }
+
+    /* ===== PRICING ===== */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
     .pricing-card {
-      padding: 26px 20px; border-radius: 16px;
-      background: var(--surface); border: 1px solid var(--border);
-      position: relative; text-align: center;
+      padding: 26px 20px;
+      border-radius: var(--radius-xl);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      position: relative;
+      text-align: center;
+      transition: border-color var(--transition-normal), transform var(--transition-slow);
     }
+
+    .pricing-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+
     .pricing-card.featured {
-      border-color: rgba(249,115,22,0.4);
-      background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(249,115,22,0.02));
+      border-color: var(--color-border-active);
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(249, 115, 22, 0.02));
     }
+
+    .pricing-card.featured:hover {
+      border-color: rgba(249, 115, 22, 0.55);
+    }
+
     .pricing-badge {
-      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      padding: 3px 12px; border-radius: 6px;
-      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      font-weight: 700; color: #fff; letter-spacing: 0.5px; white-space: nowrap;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 3px 12px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-dark));
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xxs);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
-    .pricing-name { font-size: 15px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
-    .pricing-price { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+
+    .pricing-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text-50);
+      margin-bottom: 8px;
+    }
+
+    .pricing-price {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--color-text-100);
+    }
+
     .pricing-unit {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      color: var(--dim); margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-text-20);
+      margin-bottom: 14px;
     }
+
     .pricing-detail {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--dim); line-height: 1.8;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-20);
+      line-height: 1.8;
     }
+
+    .pricing-tagline {
+      font-size: var(--text-caption);
+      color: var(--color-text-50);
+      margin-top: 14px;
+      font-style: italic;
+    }
+
     .pricing-trial {
-      display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 6px;
-      background: rgba(249,115,22,0.08);
-      font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      font-weight: 600; color: var(--orange);
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--color-orange-surface-hover);
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xs);
+      font-weight: 600;
+      color: var(--color-orange);
     }
+
     .pricing-save {
-      display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 6px;
-      background: rgba(34,197,94,0.08);
-      font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      font-weight: 600; color: var(--green);
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(34, 197, 94, 0.08);
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xs);
+      font-weight: 600;
+      color: var(--color-green);
     }
 
-    /* QUOTE SECTION */
+    /* ===== TESTIMONIALS ===== */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .testimonial-card {
+      padding: 28px 24px;
+      border-radius: var(--radius-xl);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      transition: border-color var(--transition-normal), transform var(--transition-slow);
+    }
+
+    .testimonial-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .testimonial-quote-mark {
+      font-family: var(--font-primary);
+      font-size: 32px;
+      font-weight: 800;
+      color: rgba(249, 115, 22, 0.25);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .testimonial-text {
+      font-size: var(--text-body-sm);
+      color: var(--color-text-65);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-attribution {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      font-weight: 500;
+      color: var(--color-text-20);
+    }
+
+    /* ===== QUOTE SECTION ===== */
     .quote-section {
-      padding: 80px 24px; text-align: center;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      padding: 80px var(--container-padding);
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
     }
+
+    .quote-decoration {
+      font-family: var(--font-primary);
+      font-size: 80px;
+      font-weight: 800;
+      color: rgba(249, 115, 22, 0.10);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
     .quote-text {
-      font-size: clamp(22px, 4vw, 32px); font-weight: 300;
-      color: var(--muted); max-width: 600px;
-      margin: 0 auto; line-height: 1.5;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 300;
+      color: var(--color-text-50);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
     }
-    .quote-text strong { color: var(--orange); font-weight: 700; }
 
-    /* LEGAL */
-    .legal-section { padding: 80px 24px; max-width: 760px; margin: 0 auto; }
-    .legal-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
-    .legal-updated {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      color: var(--dim); margin-bottom: 28px;
+    .quote-text strong {
+      color: var(--color-orange);
+      font-weight: 700;
     }
-    .legal-section h3 {
-      font-size: 17px; font-weight: 700; margin-top: 28px;
-      margin-bottom: 10px; color: var(--text);
+
+    /* ===== FINAL CTA ===== */
+    .final-cta-section {
+      padding: 100px var(--container-padding);
+      text-align: center;
+      position: relative;
     }
-    .legal-section p, .legal-section li {
-      font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 10px;
+
+    .final-cta-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.04) 0%, transparent 60%);
+      pointer-events: none;
     }
-    .legal-section ul { padding-left: 20px; margin-bottom: 14px; }
-    .legal-section li { margin-bottom: 6px; }
-    .legal-section a {
-      color: var(--orange); text-decoration: underline; text-underline-offset: 3px;
+
+    .final-cta-headline {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      color: var(--color-text-100);
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
     }
+
+    .final-cta-sub {
+      font-size: var(--text-body-lg);
+      color: var(--color-text-50);
+      max-width: 420px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    .final-cta {
+      display: inline-flex;
+      padding: 16px 40px;
+      border-radius: var(--radius-lg);
+      border: none;
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-dark));
+      color: #fff;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-lg);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+      box-shadow: var(--shadow-button);
+      position: relative;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .final-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-button-hover);
+      animation: none;
+    }
+
+    .final-cta:active {
+      transform: translateY(0px);
+      box-shadow: 0 0 20px rgba(249, 115, 22, 0.20);
+      transition-duration: 100ms;
+    }
+
+    .final-cta-store {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-text-20);
+      position: relative;
+    }
+
+    /* ===== LEGAL SECTIONS ===== */
     .legal-divider {
-      width: 100%; max-width: 760px; height: 1px;
-      background: var(--border); margin: 0 auto;
+      width: 100%;
+      max-width: var(--container-legal);
+      height: 1px;
+      background: var(--color-border);
+      margin: 0 auto;
     }
 
-    /* FOOTER */
+    .legal-section {
+      padding: 80px var(--container-padding);
+      max-width: var(--container-legal);
+      margin: 0 auto;
+    }
+
+    .legal-section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .legal-updated {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono);
+      color: var(--color-text-20);
+      margin-bottom: 28px;
+    }
+
+    .legal-section h3 {
+      font-size: var(--text-body-lg);
+      font-weight: 700;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      color: var(--color-text-100);
+    }
+
+    .legal-section p,
+    .legal-section li {
+      font-size: var(--text-body-sm);
+      color: var(--color-text-50);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .legal-section ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    .legal-section li {
+      margin-bottom: 6px;
+    }
+
+    .legal-section a {
+      color: var(--color-orange);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .legal-section a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--color-orange);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 300ms var(--ease-out);
+    }
+
+    .legal-section a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* ===== FOOTER ===== */
     footer {
-      padding: 40px 24px 60px; text-align: center;
-      border-top: 1px solid var(--border);
-    }
-    .footer-logo { font-size: 18px; font-weight: 800; color: var(--orange); margin-bottom: 16px; }
-    .footer-links {
-      display: flex; gap: 24px; justify-content: center;
-      flex-wrap: wrap; margin-bottom: 16px;
-    }
-    .footer-links a {
-      font-size: 13px; color: var(--dim);
-      text-decoration: none; transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--muted); }
-    .footer-copy {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: rgba(255,255,255,0.08);
+      padding: 40px var(--container-padding) 60px;
+      text-align: center;
+      border-top: 1px solid var(--color-border);
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      .nav-links a:not(.nav-cta) { display: none; }
-      .features-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr 1fr; }
-      .screenshot-item { width: 170px; }
+    .footer-logo {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-orange);
+      margin-bottom: 16px;
     }
-    @media (max-width: 480px) {
-      .pricing-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
-      nav { padding: 12px 16px; }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      font-size: var(--text-caption);
+      color: var(--color-text-20);
+      text-decoration: none;
+      transition: color var(--transition-normal);
+      padding: 12px 0;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text-50);
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-08);
+    }
+
+    /* ===== RESPONSIVE: MOBILE ===== */
+    @media (max-width: 767px) {
+      .nav {
+        padding: 12px 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: flex;
+      }
+
+      .hero {
+        padding: 100px 20px 60px;
+        min-height: 100svh;
+      }
+
+      .hero-number {
+        letter-spacing: -2px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1px;
+      }
+
+      .hero-cta,
+      .final-cta {
+        padding: 14px 32px;
+        font-size: 16px;
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+      }
+
+      .social-proof {
+        gap: 20px;
+        flex-direction: column;
+      }
+
+      .screenshot-item {
+        width: 170px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        margin: 0 auto;
+        gap: 16px;
+      }
+
+      .pricing-card.featured {
+        order: -1;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-section {
+        padding: 60px 20px;
+      }
+
+      .section,
+      .problem,
+      .life-perspective {
+        padding: 60px 20px;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .final-cta-section {
+        padding: 80px 20px;
+      }
+    }
+
+    /* ===== RESPONSIVE: SMALL MOBILE ===== */
+    @media (max-width: 479px) {
+      .nav {
+        padding: 10px 16px;
+      }
+
+      .hero {
+        padding: 90px 16px 50px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .pricing-grid {
+        max-width: 280px;
+      }
+
+      .screenshot-item {
+        width: 150px;
+      }
+
+      .quote-decoration {
+        font-size: 60px;
+      }
+    }
+
+    /* ===== RESPONSIVE: TABLET ===== */
+    @media (min-width: 768px) and (max-width: 1199px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .screenshot-item {
+        width: 180px;
+      }
+    }
+
+    /* ===== RESPONSIVE: DESKTOP ===== */
+    @media (min-width: 1200px) {
+      .hero h1 {
+        max-width: 700px;
+      }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .hero-particles {
+        display: none;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .reveal-stagger > * {
+        opacity: 1;
+        transform: none;
+      }
+
+      .hero-bar-fill {
+        width: 40.5%;
+      }
+    }
+
+    /* ===== GROWTH: PERSONALIZED AGE INPUT ===== */
+    .hero-age-input {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 6px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-age-input label {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-text-20);
+      white-space: nowrap;
+    }
+
+    .hero-age-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .hero-age-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-orange);
+      cursor: pointer;
+      border: none;
+      transition: box-shadow 150ms;
+    }
+
+    .hero-age-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-orange);
+      cursor: pointer;
+      border: none;
+    }
+
+    .hero-age-slider:hover::-webkit-slider-thumb {
+      box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+    }
+
+    .hero-age-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      color: var(--color-orange);
+      min-width: 32px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* ===== GROWTH: URGENCY CLOCK ===== */
+    .hero-urgency {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xs);
+      color: var(--color-text-10);
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.5px;
+      transition: color 300ms;
+    }
+
+    .hero-urgency:hover {
+      color: var(--color-text-20);
+    }
+
+    /* ===== GROWTH: STICKY BOTTOM CTA (Mobile) ===== */
+    .sticky-bottom-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--color-border);
+      transform: translateY(100%);
+      transition: transform 400ms var(--ease-out);
+      text-align: center;
+    }
+
+    .sticky-bottom-cta.visible {
+      transform: translateY(0);
+    }
+
+    .sticky-bottom-cta a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 320px;
+      padding: 14px 32px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-dark));
+      color: #fff;
+      font-family: var(--font-primary);
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: var(--shadow-button);
+    }
+
+    .sticky-bottom-cta .sticky-sub {
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xxs);
+      color: var(--color-text-20);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 767px) {
+      .sticky-bottom-cta {
+        display: block;
+      }
+
+      /* Add bottom padding to body so sticky CTA doesn't cover content */
+      .sticky-bottom-cta.visible ~ * {
+        padding-bottom: 80px;
+      }
+
+      footer {
+        padding-bottom: 100px;
+      }
+    }
+
+    /* ===== GROWTH: TIME-ON-PAGE INDICATOR ===== */
+    .time-on-page {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      z-index: 80;
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-xxs);
+      color: var(--color-text-10);
+      letter-spacing: 0.5px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .time-on-page.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 767px) {
+      .time-on-page {
+        bottom: 72px;
+        left: 12px;
+        font-size: 8px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-logo">Finite</a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#terms">Terms</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#" class="nav-cta">Download</a>
-    </div>
-  </nav>
+  <!-- Skip Navigation -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-label">Time awareness app</div>
-    <div class="hero-number">16,060</div>
-    <div class="hero-number-label">days left in your life</div>
-    <div class="hero-bar"><div class="hero-bar-fill"></div></div>
-    <div class="hero-bar-label">41.5% gone</div>
-    <h1>Your time is <span class="accent">finite</span>.<br>Start acting like it.</h1>
-    <p class="hero-sub">Not another clock app. Finite shows you how much time you actually have — today, this year, and in your entire life. So you spend it on what matters.</p>
-    <a href="#" class="hero-cta">Download for iOS</a>
-    <p class="hero-store">Free on the App Store · Premium available</p>
+  <!-- NAVIGATION -->
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#" class="nav-logo">Finite</a>
+      <div class="nav-links">
+        <a href="#features" data-track="nav-features">Features</a>
+        <a href="#pricing" data-track="nav-pricing">Pricing</a>
+        <a href="#terms" data-track="nav-terms">Terms</a>
+        <a href="#privacy" data-track="nav-privacy">Privacy</a>
+        <a href="https://apps.apple.com/us/app/finite-life-perspective/id6759458886" class="nav-cta" data-track="nav-cta-download" data-ab="cta-nav">Download</a>
+      </div>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" role="dialog" aria-label="Mobile navigation menu">
+    <a href="#features" class="mobile-menu-link" data-track="mobile-nav-features">Features</a>
+    <a href="#pricing" class="mobile-menu-link" data-track="mobile-nav-pricing">Pricing</a>
+    <a href="#terms" class="mobile-menu-link" data-track="mobile-nav-terms">Terms</a>
+    <a href="#privacy" class="mobile-menu-link" data-track="mobile-nav-privacy">Privacy</a>
+    <a href="https://apps.apple.com/us/app/finite-life-perspective/id6759458886" class="mobile-menu-cta" data-track="mobile-cta-download" data-ab="cta-mobile-menu">Download for iOS</a>
   </div>
 
-  <!-- SCREENSHOTS -->
-  <div class="screenshots-wrap">
-    <div class="screenshots">
-      <div class="screenshot-item">
-        <img src="screen-today.png" alt="Today — day countdown, awake time, week and month progress">
-        <div class="screenshot-label">Today</div>
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-particles" aria-hidden="true">
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
+        <div class="hero-particle"></div><div class="hero-particle"></div><div class="hero-particle"></div>
       </div>
-      <div class="screenshot-item">
-        <img src="screen-year.png" alt="Year — 365 day heatmap and monthly progress cards">
-        <div class="screenshot-label">Year</div>
+      <div class="hero-label">TIME AWARENESS APP</div>
+      <div class="hero-number" id="hero-counter" aria-label="16,060 days left in your life" data-ab="hero-number">0</div>
+      <div class="hero-number-label" id="hero-number-label">days left in your life</div>
+      <div class="hero-age-input" aria-label="Personalize your countdown">
+        <label for="age-slider">Your age:</label>
+        <input type="range" id="age-slider" class="hero-age-slider" min="13" max="85" value="30" aria-label="Select your age" data-track="hero-age-slider">
+        <span class="hero-age-value" id="age-display" aria-live="polite">30</span>
       </div>
-      <div class="screenshot-item">
-        <img src="screen-events.png" alt="Events — countdown to deadlines and milestones">
-        <div class="screenshot-label">Events</div>
+      <div class="hero-bar" id="hero-bar" role="progressbar" aria-valuenow="40.5" aria-valuemin="0" aria-valuemax="100" aria-label="40.5 percent of life elapsed">
+        <div class="hero-bar-fill" id="hero-bar-fill"></div>
       </div>
-      <div class="screenshot-item">
-        <img src="screen-life.png" alt="Life — your entire life mapped in phases">
-        <div class="screenshot-label">Life</div>
+      <div class="hero-bar-label" id="hero-bar-label">40.5% gone</div>
+      <h1 data-ab="hero-headline">Your time is <span class="accent">finite</span>.<br>Start acting like it.</h1>
+      <p class="hero-sub" data-ab="hero-subtitle">Not another clock app. Finite shows you how much time you actually have -- today, this year, and in your entire life. So you spend it on what matters.</p>
+      <a href="https://apps.apple.com/us/app/finite-life-perspective/id6759458886" class="hero-cta" data-track="hero-cta-download" data-ab="cta-primary">Download for iOS</a>
+      <p class="hero-store">Free on the App Store. Premium available.</p>
+      <div class="hero-urgency" id="hero-urgency" aria-live="off"></div>
+    </section>
+
+    <!-- SOCIAL PROOF BAR -->
+    <section class="social-proof reveal" aria-label="Trust signals">
+      <span class="social-proof-item">4.9 rating on the App Store</span>
+      <span class="social-proof-dot" aria-hidden="true"></span>
+      <span class="social-proof-item">Built for iOS 17+</span>
+      <span class="social-proof-dot" aria-hidden="true"></span>
+      <span class="social-proof-item">Privacy-first -- your data stays on your device</span>
+    </section>
+
+    <!-- PROBLEM SECTION -->
+    <section class="problem reveal" aria-label="The problem">
+      <div class="section-label">THE PROBLEM</div>
+      <h2 class="section-title">You don't have a time management problem. You have a time awareness problem.</h2>
+      <div class="problem-body">
+        <p>You know time is limited. You say it all the time. But you don't <em>feel</em> it. Days blur together. Weeks vanish. You scroll through another evening and wonder where it went.</p>
+        <p>The problem is not that you waste time. The problem is that time is invisible -- so you treat it like it is infinite.</p>
+        <p><strong>Finite makes it visible.</strong></p>
       </div>
-      <div class="screenshot-item">
-        <img src="screen-settings.png" alt="Settings — birth year, sleep schedule, life expectancy">
-        <div class="screenshot-label">Settings</div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features" aria-labelledby="features-heading">
+      <div class="reveal">
+        <div class="section-label">FEATURES</div>
+        <h2 class="section-title" id="features-heading">Every scale of time,<br>one honest look.</h2>
+        <p class="section-desc">From the hours left today to the years left in your life. Finite makes time awareness feel real -- not abstract.</p>
       </div>
-    </div>
-  </div>
-
-  <!-- QUOTE -->
-  <div class="quote-section">
-    <p class="quote-text">You're not buying an app.<br><strong>You're buying the clock that reminds you to live.</strong></p>
-  </div>
-
-  <!-- FEATURES -->
-  <section id="features">
-    <div class="section-label">Features</div>
-    <h2 class="section-title">Every scale of time,<br>one honest look.</h2>
-    <p class="section-desc">From the hours left today to the years left in your life. Finite makes time awareness feel real — not abstract.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <span class="feature-icon">&#x23F0;</span>
-        <h3>Day Countdown</h3>
-        <p>Hours, minutes, seconds remaining in your day. A live clock that drains as time passes.</p>
+      <div class="features-grid reveal-stagger">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Your Day, Draining Live</h3>
+          <p>Hours, minutes, seconds remaining in your day. A live clock with a circular progress ring that empties as time passes. No ambiguity. No hiding.</p>
+          <div class="feature-hook">You will never look at 6 PM the same way again.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <h3>Only the Hours You Own</h3>
+          <p>Based on your actual sleep schedule, Finite calculates how many waking hours you have left today. Not 24 hours. The real number.</p>
+          <div class="feature-hook">Eight hours left sounds like a lot. Until you subtract sleep.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h3>Progress Bars for Your Life</h3>
+          <p>See how far through your week, month, and year you really are. 82% of the week. 91% of the month. Numbers that stop you mid-scroll.</p>
+          <div class="feature-hook">Thursday at 3 PM. Your week is already 75% gone.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3>365 Days. Every Single One.</h3>
+          <p>A visual grid of 365 dots -- one for every day of the year. Filled dots are days spent. Today pulses. The empty ones are what you have left.</p>
+          <div class="feature-hook">Zoom out. See the year. Count the dots you have left.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="10" y1="2" x2="10" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/><path d="M7 6h10a3 3 0 013 3v0a3 3 0 01-3 3H7a3 3 0 01-3-3v0a3 3 0 013-3z"/><path d="M7 12h10a3 3 0 013 3v0a3 3 0 01-3 3H7a3 3 0 01-3-3v0a3 3 0 013-3z"/><line x1="10" y1="18" x2="10" y2="22"/><line x1="14" y1="18" x2="14" y2="22"/></svg>
+          </div>
+          <h3>Every Deadline, Front and Center</h3>
+          <p>Track birthdays, trips, launches, exams -- anything that matters. Color-coded cards with live progress bars that shift from green to amber to red as the day approaches.</p>
+          <div class="feature-hook">Your friend's birthday is in 11 days. That trip is 73% here.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </div>
+          <h3>Your Whole Life, One Screen</h3>
+          <p>Your entire existence mapped in colored blocks -- Childhood, Education, Career, Retirement, Golden Years. Each block is one year. The filled ones are behind you. The rest is what you are working with.</p>
+          <div class="feature-hook">Scroll down. See how few blocks remain.</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">&#x1F4A4;</span>
-        <h3>Awake Hours</h3>
-        <p>Based on your sleep schedule — how many waking hours you actually have left today.</p>
+    </section>
+
+    <!-- LIFE PERSPECTIVE -->
+    <section class="life-perspective reveal" aria-label="Life perspective">
+      <div class="section-label">LIFE PERSPECTIVE</div>
+      <h2 class="section-title">You have roughly 4,000 weeks. How many are left?</h2>
+      <div class="life-body">
+        <p>Here is something most people never do: look at their entire life on a single screen.</p>
+        <p>Finite's Life Map turns your existence into a grid of colored blocks. Each block is one year. Childhood is one color. School is another. Career. Retirement. The years you have already lived are filled in. The ones ahead are empty.</p>
+        <p>It is not comfortable. It is not supposed to be.</p>
+        <p>When you see 80 years reduced to a small grid that fits in your palm, something shifts. The meeting you are dreading feels small. The trip you keep postponing feels urgent. The people you have been meaning to call -- you call them.</p>
+        <p>This is not a feature. It is a mirror.</p>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">&#x1F4C5;</span>
-        <h3>Week · Month · Year</h3>
-        <p>Progress bars for every time scale. 82.3% of your week gone. 99.15% of your month. Numbers that make you think.</p>
+      <p class="life-closing">You are not buying an app. You are buying the clock that reminds you to live.</p>
+    </section>
+
+    <!-- SCREENSHOT SHOWCASE -->
+    <section class="screenshots-wrap reveal" aria-label="App screenshots">
+      <div class="screenshots" role="list" aria-label="App screenshots gallery">
+        <div class="screenshot-item" role="listitem">
+          <img src="screen-today.png" alt="Today view showing day countdown, awake time, week and month progress" width="390" height="844" loading="lazy">
+          <div class="screenshot-label">Today</div>
+        </div>
+        <div class="screenshot-item" role="listitem">
+          <img src="screen-year.png" alt="Year view with 365-day heatmap and monthly progress cards" width="390" height="844" loading="lazy">
+          <div class="screenshot-label">Year</div>
+        </div>
+        <div class="screenshot-item" role="listitem">
+          <img src="screen-events.png" alt="Events view with countdown cards to deadlines and milestones" width="390" height="844" loading="lazy">
+          <div class="screenshot-label">Events</div>
+        </div>
+        <div class="screenshot-item" role="listitem">
+          <img src="screen-life.png" alt="Life Map showing your entire life mapped in colored phases" width="390" height="844" loading="lazy">
+          <div class="screenshot-label">Life</div>
+        </div>
+        <div class="screenshot-item" role="listitem">
+          <img src="screen-settings.png" alt="Settings for birth year, sleep schedule, and life expectancy" width="390" height="844" loading="lazy">
+          <div class="screenshot-label">Settings</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">&#x1F7E2;</span>
-        <h3>Year Heatmap</h3>
-        <p>365 dots. One for every day. Watch the year fill up day by day. Months labeled, today glowing.</p>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" id="pricing" aria-labelledby="pricing-heading">
+      <div class="reveal">
+        <div class="section-label">PRICING</div>
+        <h2 class="section-title" id="pricing-heading">Simple, honest pricing.</h2>
+        <p class="section-desc">The core experience is free. Premium unlocks your full life view, unlimited countdowns, lifetime stats, and home screen widgets.</p>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">&#x23F3;</span>
-        <h3>Event Countdowns</h3>
-        <p>Track deadlines, birthdays, trips. Color-coded cards with progress showing how close each event is.</p>
+      <div class="pricing-grid reveal-stagger" data-track="pricing-section">
+        <div class="pricing-card" data-track="pricing-free" data-ab="pricing-free">
+          <div class="pricing-name">Free</div>
+          <div class="pricing-price">$0</div>
+          <div class="pricing-unit">forever</div>
+          <div class="pricing-detail">Day countdown<br>Week / Month / Year<br>Year heatmap<br>3 event countdowns</div>
+          <p class="pricing-tagline">Everything you need to start seeing time differently.</p>
+        </div>
+        <div class="pricing-card featured" data-track="pricing-yearly" data-ab="pricing-featured">
+          <div class="pricing-badge" aria-label="Most popular plan">MOST POPULAR</div>
+          <div class="pricing-name">Yearly</div>
+          <div class="pricing-price">$7.99</div>
+          <div class="pricing-unit">per year</div>
+          <div class="pricing-detail">Everything in Free, plus:<br>Life Map &middot; Unlimited events<br>Stats &middot; Widgets &middot; Seconds</div>
+          <div class="pricing-save">Save 67%</div>
+          <div class="pricing-trial">7 days free</div>
+          <p class="pricing-tagline">Less than a coffee per month. For the rest of your perspective.</p>
+        </div>
+        <div class="pricing-card" data-track="pricing-monthly" data-ab="pricing-monthly">
+          <div class="pricing-name">Monthly</div>
+          <div class="pricing-price">$1.99</div>
+          <div class="pricing-unit">per month</div>
+          <div class="pricing-detail">All premium features<br>Cancel anytime</div>
+          <div class="pricing-trial">3 days free</div>
+          <p class="pricing-tagline">Try premium. Cancel whenever.</p>
+        </div>
+        <div class="pricing-card" data-track="pricing-lifetime" data-ab="pricing-lifetime">
+          <div class="pricing-name">Lifetime</div>
+          <div class="pricing-price">$9.99</div>
+          <div class="pricing-unit">one-time</div>
+          <div class="pricing-detail">All premium features<br>Pay once, keep forever</div>
+          <p class="pricing-tagline">One purchase. Every update. No renewals. No regrets.</p>
+        </div>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">&#x1F525;</span>
-        <h3>Life Map</h3>
-        <p>Your entire life in phases — Childhood to Golden Years. Every year as a colored block. See how much is left.</p>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section" aria-labelledby="testimonials-heading">
+      <div class="reveal">
+        <div class="section-label">TESTIMONIALS</div>
+        <h2 class="section-title" id="testimonials-heading">What people are saying.</h2>
       </div>
-    </div>
-  </section>
-
-  <!-- PRICING -->
-  <section id="pricing">
-    <div class="section-label">Pricing</div>
-    <h2 class="section-title">Simple, honest pricing.</h2>
-    <p class="section-desc">The core experience is free. Premium unlocks your full life view, unlimited countdowns, lifetime stats, and home screen widgets.</p>
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="pricing-name">Free</div>
-        <div class="pricing-price">$0</div>
-        <div class="pricing-unit">forever</div>
-        <div class="pricing-detail">Day countdown<br>Week / Month / Year<br>Year heatmap<br>3 event countdowns</div>
+      <div class="testimonials-grid reveal-stagger" data-track="testimonials-section">
+        <div class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&ldquo;</div>
+          <p class="testimonial-text">I opened Finite for the first time and it told me I had 6 hours of awake time left in my day. I put my phone down and went for a walk. That has never happened before.</p>
+          <div class="testimonial-attribution">Jake M., 28, software engineer</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&ldquo;</div>
+          <p class="testimonial-text">The Life Map hit me harder than I expected. Seeing my whole life as a grid of tiny blocks -- and realizing more than a third are already filled -- changed how I plan my weeks.</p>
+          <div class="testimonial-attribution">Priya S., 34, marketing director</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&ldquo;</div>
+          <p class="testimonial-text">I used to say I would travel 'someday.' Finite showed me I have about 45 summers left. I booked a flight that same week.</p>
+          <div class="testimonial-attribution">Marcus T., 31, freelance designer</div>
+        </div>
       </div>
-      <div class="pricing-card featured">
-        <div class="pricing-badge">MOST POPULAR</div>
-        <div class="pricing-name">Yearly</div>
-        <div class="pricing-price">$7.99</div>
-        <div class="pricing-unit">per year</div>
-        <div class="pricing-detail">Everything in Free, plus:<br>Life Map · Unlimited events<br>Stats · Widgets · Seconds</div>
-        <div class="pricing-save">Save 67%</div>
-        <div class="pricing-trial">7 days free</div>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Monthly</div>
-        <div class="pricing-price">$1.99</div>
-        <div class="pricing-unit">per month</div>
-        <div class="pricing-detail">All premium features<br>Cancel anytime</div>
-        <div class="pricing-trial">3 days free</div>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Lifetime</div>
-        <div class="pricing-price">$9.99</div>
-        <div class="pricing-unit">one-time</div>
-        <div class="pricing-detail">All premium features<br>Pay once, keep forever</div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TERMS OF SERVICE -->
-  <div class="legal-divider"></div>
-  <div class="legal-section" id="terms">
-    <h2>Terms of Service</h2>
-    <p class="legal-updated">Last updated: February 28, 2026</p>
+    <!-- FINAL CTA -->
+    <section class="final-cta-section reveal" aria-label="Download call to action">
+      <div class="final-cta-glow" aria-hidden="true"></div>
+      <h2 class="final-cta-headline" data-ab="final-headline">The clock is already running.</h2>
+      <p class="final-cta-sub" data-ab="final-subtitle">Every second you spend thinking about it is one you will not get back. Finite is free. Your time is not.</p>
+      <a href="https://apps.apple.com/us/app/finite-life-perspective/id6759458886" class="final-cta" data-track="final-cta-download" data-ab="cta-final">Download Finite -- It's Free</a>
+      <p class="final-cta-store">Available on iOS. Takes 10 seconds to install. Lasts a lifetime.</p>
+    </section>
 
-    <p>By downloading, installing, or using the Finite application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the App.</p>
+    <!-- TERMS OF SERVICE -->
+    <div class="legal-divider" aria-hidden="true"></div>
+    <section class="legal-section" id="terms" aria-labelledby="terms-heading">
+      <h2 id="terms-heading">Terms of Service</h2>
+      <p class="legal-updated">Last updated: February 28, 2026</p>
 
-    <h3>1. Description of Service</h3>
-    <p>Finite is a time awareness application that displays countdowns and progress indicators based on user-provided data (birth year, life expectancy, sleep schedule). The App is for personal, informational, and motivational purposes only.</p>
+      <p>By downloading, installing, or using the Finite application ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the App.</p>
 
-    <h3>2. Eligibility</h3>
-    <p>You must be at least 13 years old to use this App. If you are under 18, you must have consent from a parent or legal guardian.</p>
+      <h3>1. Description of Service</h3>
+      <p>Finite is a time awareness application that displays countdowns and progress indicators based on user-provided data (birth year, life expectancy, sleep schedule). The App is for personal, informational, and motivational purposes only.</p>
 
-    <h3>3. User Accounts</h3>
-    <p>Finite does not require account creation. All personal data (birth year, sleep schedule, events) is stored locally on your device unless you opt in to iCloud sync.</p>
+      <h3>2. Eligibility</h3>
+      <p>You must be at least 13 years old to use this App. If you are under 18, you must have consent from a parent or legal guardian.</p>
 
-    <h3>4. Subscriptions and In-App Purchases</h3>
-    <p>Finite offers free and premium tiers. Premium features are available through auto-renewable subscriptions and a one-time lifetime purchase, processed entirely through Apple's App Store.</p>
+      <h3>3. User Accounts</h3>
+      <p>Finite does not require account creation. All personal data (birth year, sleep schedule, events) is stored locally on your device unless you opt in to iCloud sync.</p>
 
-    <p><strong>Subscription Plans:</strong></p>
-    <ul>
-      <li><strong>Monthly:</strong> $1.99 USD per month, with a 3-day free trial for first-time subscribers.</li>
-      <li><strong>Yearly:</strong> $7.99 USD per year, with a 7-day free trial for first-time subscribers.</li>
-      <li><strong>Lifetime:</strong> $9.99 USD one-time purchase (non-subscription, no trial).</li>
-    </ul>
+      <h3>4. Subscriptions and In-App Purchases</h3>
+      <p>Finite offers free and premium tiers. Premium features are available through auto-renewable subscriptions and a one-time lifetime purchase, processed entirely through Apple's App Store.</p>
 
-    <p><strong>Billing and Renewal:</strong></p>
-    <ul>
-      <li>Payment is charged to your Apple ID account at confirmation of purchase.</li>
-      <li>Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current billing period.</li>
-      <li>Your account will be charged for renewal within 24 hours prior to the end of the current period at the rate of the selected plan.</li>
-      <li>Prices are in USD and may vary by country based on App Store regional pricing.</li>
-    </ul>
+      <p><strong>Subscription Plans:</strong></p>
+      <ul>
+        <li><strong>Monthly:</strong> $1.99 USD per month, with a 3-day free trial for first-time subscribers.</li>
+        <li><strong>Yearly:</strong> $7.99 USD per year, with a 7-day free trial for first-time subscribers.</li>
+        <li><strong>Lifetime:</strong> $9.99 USD one-time purchase (non-subscription, no trial).</li>
+      </ul>
 
-    <p><strong>Free Trials:</strong></p>
-    <ul>
-      <li>Free trial periods are offered to first-time subscribers only.</li>
-      <li>If you do not cancel before the free trial ends, your subscription will automatically convert to a paid subscription and your Apple ID account will be charged.</li>
-      <li>Any unused portion of a free trial period will be forfeited when you purchase a subscription.</li>
-    </ul>
+      <p><strong>Billing and Renewal:</strong></p>
+      <ul>
+        <li>Payment is charged to your Apple ID account at confirmation of purchase.</li>
+        <li>Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current billing period.</li>
+        <li>Your account will be charged for renewal within 24 hours prior to the end of the current period at the rate of the selected plan.</li>
+        <li>Prices are in USD and may vary by country based on App Store regional pricing.</li>
+      </ul>
 
-    <p><strong>Managing and Cancelling Subscriptions:</strong></p>
-    <ul>
-      <li>You can manage or cancel your subscription at any time through your device's <strong>Settings → Apple ID → Subscriptions</strong>.</li>
-      <li>Cancellation takes effect at the end of the current billing period. You retain access to premium features until the end of your paid period.</li>
-      <li>Deleting the App does not cancel your subscription. You must cancel through your Apple ID settings.</li>
-    </ul>
+      <p><strong>Free Trials:</strong></p>
+      <ul>
+        <li>Free trial periods are offered to first-time subscribers only.</li>
+        <li>If you do not cancel before the free trial ends, your subscription will automatically convert to a paid subscription and your Apple ID account will be charged.</li>
+        <li>Any unused portion of a free trial period will be forfeited when you purchase a subscription.</li>
+      </ul>
 
-    <p><strong>Refunds:</strong></p>
-    <p>All purchases and subscriptions are processed by Apple. Refund requests must be submitted through Apple at <a href="https://reportaproblem.apple.com" target="_blank" rel="noopener noreferrer">reportaproblem.apple.com</a>. We do not process refunds directly.</p>
+      <p><strong>Managing and Cancelling Subscriptions:</strong></p>
+      <ul>
+        <li>You can manage or cancel your subscription at any time through your device's <strong>Settings &rarr; Apple ID &rarr; Subscriptions</strong>.</li>
+        <li>Cancellation takes effect at the end of the current billing period. You retain access to premium features until the end of your paid period.</li>
+        <li>Deleting the App does not cancel your subscription. You must cancel through your Apple ID settings.</li>
+      </ul>
 
-    <h3>5. Acceptable Use</h3>
-    <p>You agree not to:</p>
-    <ul>
-      <li>Reverse-engineer, decompile, or disassemble the App.</li>
-      <li>Use the App for any unlawful purpose.</li>
-      <li>Attempt unauthorized access to any part of the App or its related systems.</li>
-      <li>Redistribute, sublicense, or resell access to the App.</li>
-    </ul>
+      <p><strong>Refunds:</strong></p>
+      <p>All purchases and subscriptions are processed by Apple. Refund requests must be submitted through Apple at <a href="https://reportaproblem.apple.com" target="_blank" rel="noopener noreferrer">reportaproblem.apple.com</a>. We do not process refunds directly.</p>
 
-    <h3>6. Intellectual Property</h3>
-    <p>All content, design, code, graphics, and trademarks within the App are owned by Finite and protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the App for personal, non-commercial purposes.</p>
+      <h3>5. Acceptable Use</h3>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Reverse-engineer, decompile, or disassemble the App.</li>
+        <li>Use the App for any unlawful purpose.</li>
+        <li>Attempt unauthorized access to any part of the App or its related systems.</li>
+        <li>Redistribute, sublicense, or resell access to the App.</li>
+      </ul>
 
-    <h3>7. Health Disclaimer</h3>
-    <p>Finite's life countdown and life expectancy features are based on general statistical averages and user-provided data. They are <strong>not</strong> medical predictions, health assessments, or guarantees of lifespan. The App is intended for motivational purposes only and should not be interpreted as medical or health advice. Consult a qualified healthcare professional for health-related concerns.</p>
+      <h3>6. Intellectual Property</h3>
+      <p>All content, design, code, graphics, and trademarks within the App are owned by Finite and protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the App for personal, non-commercial purposes.</p>
 
-    <h3>8. Disclaimer of Warranties</h3>
-    <p>The App is provided "as is" and "as available" without warranties of any kind, express or implied, including implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the App will be uninterrupted, error-free, or free of harmful components.</p>
+      <h3>7. Health Disclaimer</h3>
+      <p>Finite's life countdown and life expectancy features are based on general statistical averages and user-provided data. They are <strong>not</strong> medical predictions, health assessments, or guarantees of lifespan. The App is intended for motivational purposes only and should not be interpreted as medical or health advice. Consult a qualified healthcare professional for health-related concerns.</p>
 
-    <h3>9. Limitation of Liability</h3>
-    <p>To the maximum extent permitted by law, Finite and its developers shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, use, or profits arising from your use of the App.</p>
+      <h3>8. Disclaimer of Warranties</h3>
+      <p>The App is provided "as is" and "as available" without warranties of any kind, express or implied, including implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the App will be uninterrupted, error-free, or free of harmful components.</p>
 
-    <h3>10. Changes to Terms</h3>
-    <p>We may update these Terms from time to time. Changes will be reflected by updating the "Last updated" date. Continued use of the App after changes constitutes acceptance of the updated Terms.</p>
+      <h3>9. Limitation of Liability</h3>
+      <p>To the maximum extent permitted by law, Finite and its developers shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, use, or profits arising from your use of the App.</p>
 
-    <h3>11. Governing Law</h3>
-    <p>These Terms shall be governed by and construed in accordance with the laws of Vietnam.</p>
+      <h3>10. Changes to Terms</h3>
+      <p>We may update these Terms from time to time. Changes will be reflected by updating the "Last updated" date. Continued use of the App after changes constitutes acceptance of the updated Terms.</p>
 
-    <h3>12. Contact</h3>
-    <p>For questions about these Terms: <a href="mailto:contact@finitetime.app">contact@finitetime.app</a></p>
-  </div>
+      <h3>11. Governing Law</h3>
+      <p>These Terms shall be governed by and construed in accordance with the laws of Vietnam.</p>
 
-  <!-- PRIVACY POLICY -->
-  <div class="legal-divider"></div>
-  <div class="legal-section" id="privacy">
-    <h2>Privacy Policy</h2>
-    <p class="legal-updated">Last updated: February 28, 2026</p>
+      <h3>12. Contact</h3>
+      <p>For questions about these Terms: <a href="mailto:contact@finitetime.app">contact@finitetime.app</a></p>
+    </section>
 
-    <p>Your privacy is fundamental to Finite. This policy explains how we collect, use, and protect your information.</p>
+    <!-- PRIVACY POLICY -->
+    <div class="legal-divider" aria-hidden="true"></div>
+    <section class="legal-section" id="privacy" aria-labelledby="privacy-heading">
+      <h2 id="privacy-heading">Privacy Policy</h2>
+      <p class="legal-updated">Last updated: February 28, 2026</p>
 
-    <h3>1. Information We Collect</h3>
+      <p>Your privacy is fundamental to Finite. This policy explains how we collect, use, and protect your information.</p>
 
-    <p><strong>Information you provide:</strong></p>
-    <ul>
-      <li><strong>Profile data:</strong> Name (optional), birth year, life expectancy preference.</li>
-      <li><strong>Sleep schedule:</strong> Bedtime and wake-up time.</li>
-      <li><strong>Events:</strong> Event names, dates, and display colors you create.</li>
-    </ul>
+      <h3>1. Information We Collect</h3>
 
-    <p><strong>Information collected automatically:</strong></p>
-    <ul>
-      <li><strong>Device info:</strong> Device model, OS version, app version — used only for crash reporting and compatibility.</li>
-      <li><strong>Anonymized analytics:</strong> Feature usage data that cannot be used to identify you personally, used solely to improve the App.</li>
-    </ul>
+      <p><strong>Information you provide:</strong></p>
+      <ul>
+        <li><strong>Profile data:</strong> Name (optional), birth year, life expectancy preference.</li>
+        <li><strong>Sleep schedule:</strong> Bedtime and wake-up time.</li>
+        <li><strong>Events:</strong> Event names, dates, and display colors you create.</li>
+      </ul>
 
-    <p><strong>Information we do NOT collect:</strong></p>
-    <ul>
-      <li>We do not collect your email address, phone number, or any government-issued identification.</li>
-      <li>We do not collect location data.</li>
-      <li>We do not collect health or medical data.</li>
-      <li>We do not access your contacts, photos, camera, or microphone.</li>
-    </ul>
+      <p><strong>Information collected automatically:</strong></p>
+      <ul>
+        <li><strong>Device info:</strong> Device model, OS version, app version -- used only for crash reporting and compatibility.</li>
+        <li><strong>Anonymized analytics:</strong> Feature usage data that cannot be used to identify you personally, used solely to improve the App.</li>
+      </ul>
 
-    <h3>2. Data Storage</h3>
-    <p>All personal data you enter into Finite is stored <strong>locally on your device</strong>. We do not transmit your personal content to any external servers.</p>
-    <p>If you enable iCloud sync, your data is synced via Apple's iCloud infrastructure, governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple's Privacy Policy</a>. We do not have access to your iCloud data.</p>
+      <p><strong>Information we do NOT collect:</strong></p>
+      <ul>
+        <li>We do not collect your email address, phone number, or any government-issued identification.</li>
+        <li>We do not collect location data.</li>
+        <li>We do not collect health or medical data.</li>
+        <li>We do not access your contacts, photos, camera, or microphone.</li>
+      </ul>
 
-    <h3>3. How We Use Information</h3>
-    <ul>
-      <li>Provide app functionality — displaying countdowns and progress based on your settings.</li>
-      <li>Improve the App through anonymized usage analytics.</li>
-      <li>Diagnose and fix technical issues through crash reports.</li>
-    </ul>
+      <h3>2. Data Storage</h3>
+      <p>All personal data you enter into Finite is stored <strong>locally on your device</strong>. We do not transmit your personal content to any external servers.</p>
+      <p>If you enable iCloud sync, your data is synced via Apple's iCloud infrastructure, governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple's Privacy Policy</a>. We do not have access to your iCloud data.</p>
 
-    <h3>4. Third-Party Services</h3>
-    <ul>
-      <li><strong>Apple App Store:</strong> Payment processing for subscriptions and purchases. Governed by <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Apple's Terms</a>.</li>
-      <li><strong>Apple Analytics:</strong> Anonymized app performance data through App Store Connect.</li>
-      <li><strong>RevenueCat (if applicable):</strong> Subscription management service. Processes transaction data only. See <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer">RevenueCat Privacy Policy</a>.</li>
-    </ul>
-    <p>We do <strong>not</strong> sell, rent, or share your personal data with third parties for advertising or marketing.</p>
+      <h3>3. How We Use Information</h3>
+      <ul>
+        <li>Provide app functionality -- displaying countdowns and progress based on your settings.</li>
+        <li>Improve the App through anonymized usage analytics.</li>
+        <li>Diagnose and fix technical issues through crash reports.</li>
+      </ul>
 
-    <h3>5. Data Retention</h3>
-    <p>Your data is stored locally on your device and persists as long as the App is installed. Deleting the App removes all locally stored data. Anonymized analytics may be retained for up to 24 months.</p>
+      <h3>4. Third-Party Services</h3>
+      <ul>
+        <li><strong>Apple App Store:</strong> Payment processing for subscriptions and purchases. Governed by <a href="https://www.apple.com/legal/internet-services/itunes/" target="_blank" rel="noopener noreferrer">Apple's Terms</a>.</li>
+        <li><strong>Apple Analytics:</strong> Anonymized app performance data through App Store Connect.</li>
+        <li><strong>RevenueCat (if applicable):</strong> Subscription management service. Processes transaction data only. See <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer">RevenueCat Privacy Policy</a>.</li>
+      </ul>
+      <p>We do <strong>not</strong> sell, rent, or share your personal data with third parties for advertising or marketing.</p>
 
-    <h3>6. Children's Privacy</h3>
-    <p>Finite is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, contact us and we will delete it.</p>
+      <h3>5. Data Retention</h3>
+      <p>Your data is stored locally on your device and persists as long as the App is installed. Deleting the App removes all locally stored data. Anonymized analytics may be retained for up to 24 months.</p>
 
-    <h3>7. Your Rights</h3>
-    <ul>
-      <li><strong>Access:</strong> Request a copy of data we hold about you.</li>
-      <li><strong>Deletion:</strong> Delete your data by removing the App from your device.</li>
-      <li><strong>Opt out:</strong> Disable analytics sharing via your device's Settings → Privacy → Analytics.</li>
-    </ul>
+      <h3>6. Children's Privacy</h3>
+      <p>Finite is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, contact us and we will delete it.</p>
 
-    <h3>8. Security</h3>
-    <p>Local data is protected by your device's built-in security (passcode, Face ID, Touch ID). No method of electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+      <h3>7. Your Rights</h3>
+      <ul>
+        <li><strong>Access:</strong> Request a copy of data we hold about you.</li>
+        <li><strong>Deletion:</strong> Delete your data by removing the App from your device.</li>
+        <li><strong>Opt out:</strong> Disable analytics sharing via your device's Settings &rarr; Privacy &rarr; Analytics.</li>
+      </ul>
 
-    <h3>9. International Users</h3>
-    <p>Finite is available worldwide. Anonymized analytics may be processed in countries with different data protection laws than your own.</p>
+      <h3>8. Security</h3>
+      <p>Local data is protected by your device's built-in security (passcode, Face ID, Touch ID). No method of electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
 
-    <h3>10. Changes to This Policy</h3>
-    <p>We may update this policy from time to time. Changes will be reflected by updating the "Last updated" date. Continued use constitutes acceptance.</p>
+      <h3>9. International Users</h3>
+      <p>Finite is available worldwide. Anonymized analytics may be processed in countries with different data protection laws than your own.</p>
 
-    <h3>11. Contact</h3>
-    <p>For privacy questions or data rights requests: <a href="mailto:contact@finitetime.app">contact@finitetime.app</a></p>
-  </div>
+      <h3>10. Changes to This Policy</h3>
+      <p>We may update this policy from time to time. Changes will be reflected by updating the "Last updated" date. Continued use constitutes acceptance.</p>
+
+      <h3>11. Contact</h3>
+      <p>For privacy questions or data rights requests: <a href="mailto:contact@finitetime.app">contact@finitetime.app</a></p>
+    </section>
+
+  </main>
 
   <!-- FOOTER -->
   <footer>
     <div class="footer-logo">Finite</div>
     <div class="footer-links">
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#terms">Terms of Service</a>
-      <a href="#privacy">Privacy Policy</a>
-      <a href="mailto:contact@finitetime.app">Contact</a>
+      <a href="#features" data-track="footer-features">Features</a>
+      <a href="#pricing" data-track="footer-pricing">Pricing</a>
+      <a href="#terms" data-track="footer-terms">Terms of Service</a>
+      <a href="#privacy" data-track="footer-privacy">Privacy Policy</a>
+      <a href="mailto:contact@finitetime.app" data-track="footer-contact">Contact</a>
     </div>
     <p class="footer-copy">&copy; 2026 Finite. All rights reserved.</p>
   </footer>
 
+  <!-- GROWTH: Sticky Bottom CTA (Mobile) -->
+  <div class="sticky-bottom-cta" id="sticky-cta" aria-label="Download call to action">
+    <a href="https://apps.apple.com/us/app/finite-life-perspective/id6759458886" data-track="sticky-cta-download" data-ab="cta-sticky">Download Free</a>
+    <div class="sticky-sub">Free on the App Store</div>
+  </div>
+
+  <!-- GROWTH: Time on Page Indicator -->
+  <div class="time-on-page" id="time-on-page" aria-hidden="true"></div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // ===== NAV SCROLL BEHAVIOR =====
+      var nav = document.querySelector('.nav');
+      var scrollThreshold = 20;
+
+      function handleNavScroll() {
+        if (window.scrollY > scrollThreshold) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+
+      window.addEventListener('scroll', handleNavScroll, { passive: true });
+      handleNavScroll();
+
+      // ===== MOBILE MENU =====
+      var hamburger = document.querySelector('.nav-hamburger');
+      var mobileMenu = document.querySelector('.mobile-menu');
+      var mobileLinks = mobileMenu.querySelectorAll('a');
+
+      function toggleMobileMenu() {
+        var isOpen = mobileMenu.classList.contains('open');
+        if (isOpen) {
+          mobileMenu.classList.remove('open');
+          hamburger.classList.remove('active');
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.setAttribute('aria-label', 'Open menu');
+          document.body.style.overflow = '';
+        } else {
+          mobileMenu.classList.add('open');
+          hamburger.classList.add('active');
+          hamburger.setAttribute('aria-expanded', 'true');
+          hamburger.setAttribute('aria-label', 'Close menu');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      hamburger.addEventListener('click', toggleMobileMenu);
+
+      mobileLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.remove('open');
+          hamburger.classList.remove('active');
+          hamburger.setAttribute('aria-expanded', 'false');
+          hamburger.setAttribute('aria-label', 'Open menu');
+          document.body.style.overflow = '';
+        });
+      });
+
+      // ===== HERO COUNTER ANIMATION =====
+      var LIFE_EXPECTANCY = 74; // average remaining years baseline
+
+      function animateCounter(element, target, duration, onComplete) {
+        duration = duration || 1500;
+        var startTime = null;
+
+        function easeOutQuart(t) {
+          return 1 - Math.pow(1 - t, 4);
+        }
+
+        function update(currentTime) {
+          if (!startTime) startTime = currentTime;
+          var elapsed = currentTime - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          var easedProgress = easeOutQuart(progress);
+          var current = Math.floor(target * easedProgress);
+
+          element.textContent = current.toLocaleString();
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else if (onComplete) {
+            onComplete();
+          }
+        }
+
+        // Check for reduced motion preference
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          element.textContent = target.toLocaleString();
+          if (onComplete) onComplete();
+          return;
+        }
+
+        setTimeout(function() {
+          requestAnimationFrame(update);
+        }, 300);
+      }
+
+      // ===== PERSONALIZED AGE CALCULATOR =====
+      function calcDaysLeft(age) {
+        var totalLifespan = 74; // average life expectancy in years
+        var remainingYears = Math.max(0, totalLifespan - age);
+        return Math.round(remainingYears * 365.25);
+      }
+
+      function calcPercentGone(age) {
+        var totalLifespan = 74;
+        return Math.min(100, Math.max(0, (age / totalLifespan) * 100));
+      }
+
+      var heroNumber = document.getElementById('hero-counter');
+      var heroBarFill = document.getElementById('hero-bar-fill');
+      var heroBarLabel = document.getElementById('hero-bar-label');
+      var heroBar = document.getElementById('hero-bar');
+      var ageSlider = document.getElementById('age-slider');
+      var ageDisplay = document.getElementById('age-display');
+      var defaultAge = 30;
+      var defaultDays = calcDaysLeft(defaultAge); // 16,071 for age 30
+      var currentTarget = defaultDays;
+
+      // Start initial counter animation
+      if (heroNumber) {
+        animateCounter(heroNumber, defaultDays, 1500);
+      }
+
+      // Slider interaction
+      if (ageSlider) {
+        ageSlider.addEventListener('input', function() {
+          var age = parseInt(this.value, 10);
+          ageDisplay.textContent = age;
+
+          var daysLeft = calcDaysLeft(age);
+          var pctGone = calcPercentGone(age);
+
+          // Update counter with animation (fast)
+          currentTarget = daysLeft;
+          animateCounter(heroNumber, daysLeft, 400);
+
+          // Update progress bar
+          heroBarFill.style.animation = 'none';
+          heroBarFill.style.width = pctGone.toFixed(1) + '%';
+
+          // Update bar label
+          heroBarLabel.textContent = pctGone.toFixed(1) + '% gone';
+
+          // Update aria
+          heroBar.setAttribute('aria-valuenow', pctGone.toFixed(1));
+          heroBar.setAttribute('aria-label', pctGone.toFixed(1) + ' percent of life elapsed');
+          heroNumber.setAttribute('aria-label', daysLeft.toLocaleString() + ' days left in your life');
+        });
+      }
+
+      // ===== URGENCY CLOCK =====
+      var urgencyEl = document.getElementById('hero-urgency');
+      function updateUrgencyClock() {
+        if (!urgencyEl) return;
+        var now = new Date();
+        var endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+        var diff = endOfDay - now;
+        var hours = Math.floor(diff / 3600000);
+        var minutes = Math.floor((diff % 3600000) / 60000);
+        var seconds = Math.floor((diff % 60000) / 1000);
+
+        var h = hours.toString().padStart(2, '0');
+        var m = minutes.toString().padStart(2, '0');
+        var s = seconds.toString().padStart(2, '0');
+
+        urgencyEl.textContent = h + 'h ' + m + 'm ' + s + 's left today';
+      }
+      updateUrgencyClock();
+      setInterval(updateUrgencyClock, 1000);
+
+      // ===== SCROLL REVEAL (IntersectionObserver) =====
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        var revealObserver = new IntersectionObserver(
+          function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.15,
+            rootMargin: '0px 0px -60px 0px'
+          }
+        );
+
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
+          revealObserver.observe(el);
+        });
+      } else {
+        // If reduced motion or no IntersectionObserver, show everything
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }
+
+      // ===== SMART ANCHOR SCROLL WITH NAV OFFSET =====
+      var navHeight = 70; // matches scroll-padding-top
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          var targetId = this.getAttribute('href');
+          if (targetId === '#') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          var targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            e.preventDefault();
+            var offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+          }
+        });
+      });
+
+      // ===== STICKY BOTTOM CTA (Mobile) =====
+      var stickyCta = document.getElementById('sticky-cta');
+      var heroSection = document.querySelector('.hero');
+
+      if (stickyCta && heroSection) {
+        var stickyObserver = new IntersectionObserver(
+          function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                stickyCta.classList.remove('visible');
+              } else {
+                stickyCta.classList.add('visible');
+              }
+            });
+          },
+          { threshold: 0, rootMargin: '0px' }
+        );
+        stickyObserver.observe(heroSection);
+      }
+
+      // ===== TIME ON PAGE INDICATOR =====
+      var timeOnPageEl = document.getElementById('time-on-page');
+      var pageLoadTime = Date.now();
+      var timeOnPageShown = false;
+
+      function updateTimeOnPage() {
+        if (!timeOnPageEl) return;
+        var elapsed = Math.floor((Date.now() - pageLoadTime) / 1000);
+
+        if (elapsed < 15) return;
+
+        if (!timeOnPageShown) {
+          timeOnPageEl.classList.add('visible');
+          timeOnPageShown = true;
+        }
+
+        var mins = Math.floor(elapsed / 60);
+        var secs = elapsed % 60;
+        var display;
+        if (mins > 0) {
+          display = mins + 'm ' + secs + 's on this page';
+        } else {
+          display = secs + ' seconds on this page';
+        }
+        timeOnPageEl.textContent = display;
+      }
+      setInterval(updateTimeOnPage, 1000);
+
+    })();
+  </script>
 </body>
 </html>

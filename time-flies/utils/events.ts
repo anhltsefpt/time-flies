@@ -5,6 +5,21 @@ export const EVENT_COLORS = [
   '#8B5CF6', '#EF4444', '#F59E0B', '#6366F1',
 ];
 
+export function getNextColor(events: FiniteEvent[]): string {
+  const counts = new Map<string, number>();
+  for (const c of EVENT_COLORS) counts.set(c, 0);
+  for (const e of events) {
+    if (counts.has(e.color)) counts.set(e.color, counts.get(e.color)! + 1);
+  }
+  let min = Infinity;
+  let pick = EVENT_COLORS[0];
+  for (const c of EVENT_COLORS) {
+    const n = counts.get(c)!;
+    if (n < min) { min = n; pick = c; }
+  }
+  return pick;
+}
+
 export function getDaysLeft(due: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);

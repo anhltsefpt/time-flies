@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { setUserProperties, track } from '@/utils/analytics';
+import * as Amplitude from '@amplitude/analytics-react-native';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import Purchases, { type PurchasesStoreProduct } from 'react-native-purchases';
-import * as Amplitude from '@amplitude/analytics-react-native';
-import { track, setUserProperties } from '@/utils/analytics';
 
 export type PlanId = 'monthly' | 'yearly' | 'lifetime';
 

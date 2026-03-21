@@ -1,19 +1,19 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LifeGrid } from '@/components/LifeGrid';
+import { AppColors, AppFonts } from '@/constants/theme';
+import { usePurchases } from '@/contexts/PurchaseContext';
+import { useSettings } from '@/contexts/SettingsContext';
+import { track } from '@/utils/analytics';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
-import { AppColors, AppFonts } from '@/constants/theme';
-import { LifeGrid } from '@/components/LifeGrid';
-import { useSettings } from '@/contexts/SettingsContext';
-import { usePurchases } from '@/contexts/PurchaseContext';
-import { track } from '@/utils/analytics';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LifeScreen() {
   const insets = useSafeAreaInsets();
   const { settings } = useSettings();
   let { isProUser } = usePurchases();
-  // isProUser = true;
+  isProUser = true;
   const router = useRouter();
 
   return (

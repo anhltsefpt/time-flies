@@ -1,7 +1,15 @@
-import React, { useRef } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Swipeable } from 'react-native-gesture-handler';
+import React, { useCallback, useRef, useEffect } from 'react';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import Animated, {
+  FadeInDown,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import { Swipeable, RectButton } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { AppColors, AppFonts } from '@/constants/theme';
@@ -17,19 +25,13 @@ import {
 import { glowShadow } from '@/utils/shadow';
 import type { FiniteEvent } from '@/types';
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 interface EventCardProps {
   event: FiniteEvent;
   index: number;
   onPress: () => void;
   onDelete?: (id: number) => void;
-}
-
-function renderRightActions() {
-  return (
-    <View style={styles.swipeDelete}>
-      <Text style={styles.swipeDeleteText}>Delete</Text>
-    </View>
-  );
 }
 
 export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
@@ -39,20 +41,61 @@ export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
   const progress = getEventProgress(event.due, event.created);
   const swipeableRef = useRef<Swipeable>(null);
 
-  const handleSwipeOpen = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    swipeableRef.current?.close();
-    if (onDelete) {
-      onDelete(event.id);
+  const shouldPulse = tier === 'soon' || tier === 'critical';
+  const glowOpacity = useSharedValue(0.6);
+
+  useEffect(() => {
+    if (shouldPulse) {
+      const isCritical = tier === 'critical';
+      const low = 0.2;
+      const high = isCritical ? 0.9 : 0.7;
+      const halfCycle = isCritical ? 600 : 1000;
+      const easing = Easing.inOut(Easing.ease);
+
+      glowOpacity.value = withRepeat(
+        withSequence(
+          withTiming(low, { duration: halfCycle, easing }),
+          withTiming(high, { duration: halfCycle, easing }),
+        ),
+        -1,
+        false,
+      );
+    } else {
+      glowOpacity.value = 0.6;
     }
-  };
+  }, [shouldPulse, tier]);
+
+  const animatedGlowStyle = useAnimatedStyle(() => ({
+    shadowOpacity: glowOpacity.value,
+  }));
+
+  const handleDeletePress = useCallback(() => {
+    swipeableRef.current?.close();
+    Alert.alert('Delete Event', 'Are you sure you want to delete this event?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onDelete?.(event.id);
+        },
+      },
+    ]);
+  }, [onDelete, event.id]);
+
+  const renderRightActions = useCallback(() => (
+    <RectButton style={styles.swipeDelete} onPress={handleDeletePress}>
+      <Text style={styles.swipeDeleteText}>Delete</Text>
+    </RectButton>
+  ), [handleDeletePress]);
 
   const tierStyles = getTierStyles(tier, event.color);
 
   const cardContent = (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
-      style={[styles.card, tierStyles.card]}
+      style={[styles.card, tierStyles.card, shouldPulse && animatedGlowStyle]}
     >
       <View style={styles.info}>
         <Text
@@ -89,9 +132,9 @@ export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
       <CountdownBadge
         days={days}
         color={event.color}
-        pulse={tier === 'critical'}
+        pulse={tier === 'critical' || tier === 'soon'}
       />
-    </Pressable>
+    </AnimatedPressable>
   );
 
   if (isPast || !onDelete) {
@@ -107,8 +150,6 @@ export function EventCard({ event, index, onPress, onDelete }: EventCardProps) {
       <Swipeable
         ref={swipeableRef}
         renderRightActions={renderRightActions}
-        onSwipeableOpen={handleSwipeOpen}
-        rightThreshold={80}
         overshootRight={false}
       >
         {cardContent}
